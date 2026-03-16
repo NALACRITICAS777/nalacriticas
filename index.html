@@ -212,7 +212,6 @@
     const database = firebase.database();
     const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff'];
 
-    // NUEVA LÓGICA DE TIEMPO
     function tiempoRelativo(fecha) {
         const diff = Math.floor((Date.now() - fecha) / 1000); 
         if (diff < 60) return `ahora`;
@@ -226,7 +225,6 @@
         document.getElementById('overlay').classList.toggle('active');
     }
 
-    // --- LÓGICA DEL WIDGET DE ENCUESTA DIRECTA ---
     function openPollModal() {
         document.getElementById('pollModal').style.display = 'flex';
         const mainUser = document.getElementById('username').value.trim();
@@ -413,7 +411,14 @@
 
     function updateTop(elementId, arr, field, icon) {
         const container = document.getElementById(elementId);
-        const filtered = arr.filter(m => (m[field] || 0) >= 1).sort((a, b) => (b[field] || 0) - (a[field] || 0)).slice(0, 3);
+        
+        // Buscamos el puntaje más alto en esa categoría
+        const maxVal = arr.length ? Math.max(...arr.map(m => m[field] || 0)) : 0;
+        
+        // Solo pasan los que tienen el puntaje máximo y es al menos 1
+        // Cortamos en 3 por si hay empate masivo (para que no rompa el diseño)
+        const filtered = arr.filter(m => (m[field] || 0) === maxVal && maxVal >= 1).slice(0, 3);
+        
         container.innerHTML = filtered.length ? "" : "<p style='font-size:0.5rem; color:#444;'>...</p>";
         filtered.forEach(m => {
             const item = document.createElement('div');
