@@ -98,7 +98,6 @@
         .send-btn { width: 100%; padding: 14px; background: white; color: black; border: none; font-weight: 900; border-radius: 10px; cursor: pointer; text-transform: uppercase; flex: 1; }
         .poll-trigger-btn { padding: 0 20px; background: var(--accent); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.2rem; }
         
-        /* ESTILOS DEL MODAL DE ENCUESTA */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(3px);
@@ -162,18 +161,13 @@
 <div class="modal-overlay" id="pollModal">
     <div class="modal-box">
         <h3 style="margin-top: 0; color: white;">Lanzar Encuesta 📊</h3>
-        
         <input type="text" id="pollUsername" placeholder="Tu Nickname..." style="border-color: #333; margin-bottom: 10px;">
-        
         <input type="text" id="pollTheme" placeholder="Tema/Pregunta de la encuesta..." style="border-color: var(--accent); margin-bottom: 15px;">
-        
         <div id="pollOptionsContainer">
             <input type="text" class="p-opt" placeholder="Opción 1">
             <input type="text" class="p-opt" placeholder="Opción 2">
         </div>
-        
         <button class="add-opt-btn" id="btnAddOption" onclick="addPollOption()">+ Añadir opción (Máx 4)</button>
-        
         <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button class="send-btn" onclick="closePollModal()" style="background: #333; color: white;">Cancelar</button>
             <button class="send-btn" onclick="sendPollDirect()" style="background: var(--accent); color: white;">Enviar Encuesta</button>
@@ -194,7 +188,6 @@
     <div class="input-card">
         <input type="text" id="username" placeholder="Nickname...">
         <textarea id="commentText" rows="3" placeholder="Comenta algo papu..."></textarea>
-        
         <div style="display: flex; gap: 10px;">
             <button class="poll-trigger-btn" onclick="openPollModal()" title="Crear Encuesta">📊</button>
             <button class="send-btn" onclick="addComment(null)">PUBLICA TU WEBADA</button>
@@ -219,6 +212,15 @@
     const database = firebase.database();
     const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff'];
 
+    // NUEVA LÓGICA DE TIEMPO
+    function tiempoRelativo(fecha) {
+        const diff = Math.floor((Date.now() - fecha) / 1000); 
+        if (diff < 60) return `ahora`;
+        if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+        return `${Math.floor(diff / 86400)}d`;
+    }
+
     function toggleMenu() {
         document.getElementById('topSection').classList.toggle('active');
         document.getElementById('overlay').classList.toggle('active');
@@ -227,7 +229,6 @@
     // --- LÓGICA DEL WIDGET DE ENCUESTA DIRECTA ---
     function openPollModal() {
         document.getElementById('pollModal').style.display = 'flex';
-        // Auto-completar el nickname si el usuario ya lo escribió en el formulario principal
         const mainUser = document.getElementById('username').value.trim();
         if(mainUser && !document.getElementById('pollUsername').value) {
             document.getElementById('pollUsername').value = mainUser;
@@ -252,7 +253,6 @@
         }
     }
 
-    // ENVÍA LA ENCUESTA DIRECTAMENTE A FIREBASE
     function sendPollDirect() {
         const user = document.getElementById('pollUsername').value.trim();
         const theme = document.getElementById('pollTheme').value.trim();
@@ -277,10 +277,9 @@
             opciones: validOptions
         };
 
-        // Enviar a la base de datos
         database.ref('comentarios').push({
             autor: user || "Anónimo",
-            mensaje: "", // Se envía sin texto adicional para que sea 100% una encuesta
+            mensaje: "",
             parentId: null,
             encuesta: pollData,
             color: colors[Math.floor(Math.random() * colors.length)],
@@ -288,14 +287,12 @@
             fecha: Date.now()
         });
 
-        // Limpiar y cerrar modal
         closePollModal();
         document.getElementById('pollUsername').value = "";
         document.getElementById('pollTheme').value = "";
         document.getElementById('pollOptionsContainer').innerHTML = '<input type="text" class="p-opt" placeholder="Opción 1"><input type="text" class="p-opt" placeholder="Opción 2">';
         document.getElementById('btnAddOption').style.display = 'block';
     }
-    // -------------------------------------
 
     function toggleReplyBox(id) {
         const box = document.getElementById(`box-${id}`);
@@ -314,8 +311,6 @@
             if(confirm("¿Limpiar todo?")) database.ref('comentarios').remove();
             return;
         }
-        
-        // El botón principal ahora SOLO envía texto
         if (!text) return;
 
         database.ref('comentarios').push({
@@ -373,17 +368,11 @@
             let pollHtml = "";
             if (post.encuesta && post.encuesta.opciones) {
                 const totalVotos = Object.values(post.encuesta.opciones).reduce((acc, opt) => acc + (opt.votos || 0), 0);
-                pollHtml = `<div class="poll-container">
-                    <div class="poll-title">${post.encuesta.pregunta}</div>`;
-                
+                pollHtml = `<div class="poll-container"><div class="poll-title">${post.encuesta.pregunta}</div>`;
                 for (let key in post.encuesta.opciones) {
                     const opt = post.encuesta.opciones[key];
                     const porc = totalVotos > 0 ? Math.round((opt.votos / totalVotos) * 100) : 0;
-                    pollHtml += `
-                        <div class="poll-option" onclick="votePollOption('${post.id}', '${key}')">
-                            <div class="poll-bar" style="width: ${porc}%"></div>
-                            <div class="poll-text"><span>${opt.texto}</span> <b>${porc}%</b></div>
-                        </div>`;
+                    pollHtml += `<div class="poll-option" onclick="votePollOption('${post.id}', '${key}')"><div class="poll-bar" style="width: ${porc}%"></div><div class="poll-text"><span>${opt.texto}</span> <b>${porc}%</b></div></div>`;
                 }
                 pollHtml += `<div style="font-size:0.7rem; color:#888; margin-top:5px; text-align:right;">Total de votos: ${totalVotos}</div></div>`;
             }
@@ -394,12 +383,10 @@
                 <div class="message" id="msg-${post.id}" style="--u-color: ${post.color}">
                     <div class="u-header">
                         <span class="u-name">${post.autor}</span>
-                        <span class="u-time">${Math.floor((Date.now()-post.fecha)/60000)}m ago</span>
+                        <span class="u-time">${tiempoRelativo(post.fecha)} ago</span>
                     </div>
                     ${post.mensaje ? `<div class="u-msg">${post.mensaje.replace(/</g, "&lt;")}</div>` : ''}
-                    
                     ${pollHtml}
-
                     <div class="actions">
                         <button class="vote-btn ${myVote==='likes'?'voted-up':''}" onclick="handleVote('${post.id}','likes')">👍 ${post.likes||0}</button>
                         <button class="vote-btn ${myVote==='dislikes'?'voted-down':''}" onclick="handleVote('${post.id}','dislikes')">👎 ${post.dislikes||0}</button>
@@ -408,18 +395,12 @@
                         ${postReplies.length > 0 ? `<span class="reply-btn" onclick="toggleReplies('${post.id}')">👁 Ver ${postReplies.length}</span>` : ''}
                     </div>
                     <div class="reply-box" id="box-${post.id}">
-                        <input type="text" id="user-${post.id}" placeholder="Tu Nick...">
-                        <textarea id="text-${post.id}" placeholder="Tu respuesta..."></textarea>
+                        <input type="text" id="user-${post.id}" placeholder="Tu Nick..."><textarea id="text-${post.id}" placeholder="Tu respuesta..."></textarea>
                         <button class="send-btn" onclick="addComment('${post.id}')">ENVIAR RESPUESTA</button>
                     </div>
                 </div>
                 <div class="replies-container" id="replies-${post.id}">
-                    ${postReplies.map(r => `
-                        <div class="message" style="--u-color: #333; margin-top:10px; border-width: 1px;">
-                            <div class="u-header"><span class="u-name" style="color:#888">${r.autor}</span></div>
-                            <div class="u-msg" style="font-size:0.9rem;">${r.mensaje}</div>
-                        </div>
-                    `).join('')}
+                    ${postReplies.map(r => `<div class="message" style="--u-color: #333; margin-top:10px; border-width: 1px;"><div class="u-header"><span class="u-name" style="color:#888">${r.autor}</span></div><div class="u-msg" style="font-size:0.9rem;">${r.mensaje}</div></div>`).join('')}
                 </div>
             `;
             list.appendChild(threadDiv);
@@ -439,12 +420,7 @@
             item.className = 'top-item'; item.style.setProperty('--c', m.color);
             item.onclick = () => {
                 const target = document.getElementById('msg-' + m.id);
-                if (target) { 
-                    toggleMenu(); 
-                    target.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
-                    target.classList.add('highlight-active'); 
-                    setTimeout(() => target.classList.remove('highlight-active'), 2000); 
-                }
+                if (target) { toggleMenu(); target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.classList.add('highlight-active'); setTimeout(() => target.classList.remove('highlight-active'), 2000); }
             };
             item.innerHTML = `${icon} <b>${m.autor}</b>: ${m.mensaje ? m.mensaje.substring(0, 15) : 'Encuesta'}...`;
             container.appendChild(item);
