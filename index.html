@@ -41,7 +41,6 @@
             filter: blur(2px); z-index: -1;
         }
 
-        /* DISEÑO DE ORBES FONDO */
         .orb { position: fixed; border-radius: 50%; filter: blur(80px); z-index: -2; animation: float 15s infinite ease-in-out alternate; }
         .orb-1 { width: 35vw; height: 35vw; background: rgba(125, 95, 255, 0.12); top: -10%; left: -10%; }
         .orb-2 { width: 45vw; height: 45vw; background: rgba(0, 242, 254, 0.08); bottom: -10%; right: -10%; }
@@ -73,7 +72,6 @@
         .btn-yt { background: var(--yt); color: white; }
         .btn-ig { background: linear-gradient(45deg, #f09433, #bc1888); color: white; }
 
-        /* RANKING LATERAL */
         .menu-toggle {
             position: fixed; top: 25px; right: 25px; z-index: 1001;
             background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
@@ -92,7 +90,6 @@
         .top-item { font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--c); cursor: pointer; transition: 0.2s; }
         .top-item:hover { background: rgba(255,255,255,0.05); transform: translateX(-5px); }
 
-        /* INPUT CARD Y DRAG DROP */
         .input-card { width: 100%; background: var(--card-bg); padding: 25px; border-radius: 20px; margin-bottom: 40px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
         .input-card.drag-over { border: 2px dashed var(--accent); background: rgba(125, 95, 255, 0.1); transform: scale(1.01); }
         
@@ -104,14 +101,12 @@
         .poll-trigger-btn { padding: 0 20px; background: var(--accent); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .poll-trigger-btn:hover { filter: brightness(1.2); }
 
-        /* MODALES Y BOTÓN AÑADIR OPCIÓN ARREGLADO */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 2000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: #0f0f19; padding: 30px; border-radius: 24px; width: 90%; max-width: 400px; border: 1px solid var(--accent); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         
         .add-opt-btn { background: none; border: 1px dashed #555; color: #aaa; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-family: inherit; transition: 0.2s; }
         .add-opt-btn:hover { border-color: white; color: white; background: rgba(255,255,255,0.05); }
 
-        /* COMENTARIOS */
         .comment-thread { width: 100%; margin-bottom: 25px; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -142,7 +137,6 @@
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; display: none; }
         .overlay.active { display: block; }
 
-        /* ESTILO PARA EL TEXTO DE CARGA */
         .loading-text { text-align: center; color: var(--accent); font-weight: bold; padding: 30px; animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
     </style>
@@ -255,7 +249,7 @@
     function handleFileSelect(e) { if(e.target.files.length > 0) processFile(e.target.files[0]); }
 
     function processFile(file) {
-        if (file.size > 15 * 1024 * 1024) return alert("El archivo supera los 15MB. Pon algo menos pesado causa.");
+        if (file.size > 15 * 1024 * 1024) return alert("El archivo supera los 15MB.");
         const isVideo = file.type.startsWith('video');
         currentMediaType = isVideo ? 'video' : 'image';
         const reader = new FileReader();
@@ -264,7 +258,7 @@
             const pb = document.getElementById('mediaPreview');
             pb.style.display = 'block';
             pb.innerHTML = isVideo ? `<video src="${currentMediaData}" controls></video>` : `<img src="${currentMediaData}">`;
-            pb.innerHTML += `<br><button class="remove-media-btn" onclick="clearMedia()" style="background:red; color:white; border:none; padding:5px 10px; border-radius:5px; margin-top:10px; cursor:pointer;">Quitar archivo</button>`;
+            pb.innerHTML += `<br><button onclick="clearMedia()" style="background:red; color:white; border:none; padding:5px 10px; border-radius:5px; margin-top:10px; cursor:pointer;">Quitar archivo</button>`;
         };
         reader.readAsDataURL(file);
     }
@@ -299,16 +293,16 @@
                 index++;
             }
         });
-        if (index < 2) return alert("Mínimo 2 opciones para una encuesta.");
+        if (index < 2) return alert("Mínimo 2 opciones.");
         database.ref('comentarios').push({ autor: user || "Anónimo", mensaje: "", parentId: null, encuesta: { pregunta: theme || "Encuesta", opciones: validOptions }, media: null, mediaType: null, color: colors[Math.floor(Math.random() * colors.length)], likes: 0, dislikes: 0, tomates: 0, fecha: Date.now() });
         closePollModal();
     }
 
-    /* SISTEMA DE VOTOS PARA ENCUESTAS REPARADO */
+    /* VOTO ENCUESTAS ARREGLADO (CON ACTUALIZACIÓN DE UI) */
     function votePollOption(msgId, optKey) {
         const localKey = `pollVoted_${msgId}`;
         if (localStorage.getItem(localKey)) {
-            alert("Oe, ya votaste en esta encuesta. No hagas trampa xd");
+            alert("Ya votaste aquí, chistoso.");
             return;
         }
         database.ref(`comentarios/${msgId}/encuesta/opciones/${optKey}/votos`).transaction(v => (v || 0) + 1);
@@ -351,8 +345,23 @@
     }
 
     /* RENDERIZADO PRINCIPAL */
+    function drawPoll(msgId, encuesta) {
+        if (!encuesta) return "";
+        const total = Object.values(encuesta.opciones).reduce((a, b) => a + (b.votos || 0), 0);
+        let html = `<div class="poll-inner-box" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:10px; margin:10px 0;"><b>${encuesta.pregunta}</b><br>`;
+        for (let k in encuesta.opciones) {
+            const opt = encuesta.opciones[k];
+            const p = total > 0 ? Math.round((opt.votos/total)*100) : 0;
+            html += `<div style="background:rgba(255,255,255,0.05); margin:5px 0; padding:8px; border-radius:5px; position:relative; cursor:pointer;" onclick="votePollOption('${msgId}', '${k}')">
+                <div style="background:var(--accent); position:absolute; left:0; top:0; height:100%; width:${p}%; opacity:0.2; transition:0.3s;"></div>
+                <div style="position:relative; display:flex; justify-content:space-between; font-size:0.9rem;"><span>${opt.texto}</span><span>${p}% (${opt.votos || 0})</span></div>
+            </div>`;
+        }
+        html += `</div>`;
+        return html;
+    }
+
     database.ref('comentarios').on('child_added', (snapshot) => {
-        // OCULTAR TEXTO DE CARGA CUANDO LLEGA EL PRIMER MENSAJE
         const loader = document.getElementById('loader');
         if (loader) loader.style.display = 'none';
 
@@ -368,22 +377,6 @@
             const myVote = localStorage.getItem('v_' + post.id);
             const mediaHtml = post.media ? (post.mediaType === 'video' ? `<div class="u-media"><video src="${post.media}" controls></video></div>` : `<div class="u-media"><img src="${post.media}"></div>`) : "";
             
-            let pollHtml = "";
-            if (post.encuesta) {
-                const total = Object.values(post.encuesta.opciones).reduce((a, b) => a + (b.votos || 0), 0);
-                pollHtml = `<div class="poll-container" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:10px; margin:10px 0;"><b>${post.encuesta.pregunta}</b><br>`;
-                for (let k in post.encuesta.opciones) {
-                    const opt = post.encuesta.opciones[k];
-                    const p = total > 0 ? Math.round((opt.votos/total)*100) : 0;
-                    // REPARACIÓN: SE AÑADIÓ LA LLAMADA A votePollOption
-                    pollHtml += `<div style="background:rgba(255,255,255,0.05); margin:5px 0; padding:8px; border-radius:5px; position:relative; cursor:pointer;" onclick="votePollOption('${post.id}', '${k}')">
-                        <div style="background:var(--accent); position:absolute; left:0; top:0; height:100%; width:${p}%; opacity:0.2;"></div>
-                        <div style="position:relative; display:flex; justify-content:space-between;"><span>${opt.texto}</span><span>${p}%</span></div>
-                    </div>`;
-                }
-                pollHtml += `</div>`;
-            }
-
             threadDiv.innerHTML = `
                 <div class="message" id="msg-${post.id}" style="--u-color: ${post.color}">
                     <div class="u-header">
@@ -392,7 +385,7 @@
                     </div>
                     ${post.mensaje ? `<div class="u-msg">${post.mensaje.replace(/</g, "&lt;")}</div>` : ''}
                     ${mediaHtml}
-                    ${pollHtml}
+                    <div id="poll-ui-${post.id}">${drawPoll(post.id, post.encuesta)}</div>
                     <div class="actions">
                         <button class="vote-btn btn-l ${myVote==='likes'?'voted-up':''}" onclick="handleVote('${post.id}','likes')">👍 <span>${post.likes||0}</span></button>
                         <button class="vote-btn btn-d ${myVote==='dislikes'?'voted-down':''}" onclick="handleVote('${post.id}','dislikes')">👎 <span>${post.dislikes||0}</span></button>
@@ -425,6 +418,11 @@
         post.id = snapshot.key;
         const msgEl = document.getElementById(`msg-${post.id}`);
         if(msgEl) {
+            // Actualizar Encuesta si existe
+            const pollUi = document.getElementById(`poll-ui-${post.id}`);
+            if (pollUi && post.encuesta) pollUi.innerHTML = drawPoll(post.id, post.encuesta);
+
+            // Actualizar Botones de Voto
             const myVote = localStorage.getItem('v_' + post.id);
             const bL = msgEl.querySelector('.btn-l');
             const bD = msgEl.querySelector('.btn-d');
@@ -445,8 +443,6 @@
         updateTop('top-dislikes', allData, 'dislikes', '💀');
         updateTop('top-tomates', allData, 'tomates', '🍅');
         isInitialLoad = false;
-        
-        // POR SI NO HAY MENSAJES EN LA BASE DE DATOS
         const loader = document.getElementById('loader');
         if (loader && allData.length === 0) loader.style.display = 'none';
     });
@@ -459,31 +455,12 @@
         filtered.forEach(m => {
             const item = document.createElement('div');
             item.className = 'top-item'; item.style.setProperty('--c', m.color);
-            
-            let pt = "";
-            if (m.mensaje) {
-                pt = m.mensaje.substring(0, 15) + '...';
-                if(m.mediaType === 'video') pt += ' (Video)';
-                else if(m.mediaType === 'image') pt += ' (Imagen)';
-            } else {
-                if(m.mediaType === 'video') pt = '(Video)';
-                else if(m.mediaType === 'image') pt = '(Imagen)';
-                else if(m.encuesta) pt = 'Encuesta...';
-                else pt = '...';
-            }
-            
+            let pt = m.mensaje ? m.mensaje.substring(0, 15) + '...' : (m.mediaType === 'video' ? '(Video)' : (m.mediaType === 'image' ? '(Imagen)' : (m.encuesta ? 'Encuesta...' : '...')));
             item.innerHTML = `${icon} <b>${m.autor}</b>: ${pt}`;
-            
             item.onclick = () => {
                 const target = document.getElementById('msg-' + m.id);
-                if (target) {
-                    toggleMenu();
-                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    target.classList.add('highlight-active');
-                    setTimeout(() => target.classList.remove('highlight-active'), 2000);
-                }
+                if (target) { toggleMenu(); target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.classList.add('highlight-active'); setTimeout(() => target.classList.remove('highlight-active'), 2000); }
             };
-            
             container.appendChild(item);
         });
     }
