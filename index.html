@@ -128,7 +128,6 @@
         .voted-down { color: var(--yt); text-shadow: 0 0 10px rgba(255, 0, 0, 0.3); }
         .voted-tomato { color: var(--tomato); text-shadow: 0 0 10px rgba(255, 77, 77, 0.3); }
         
-        /* ESTILO BOTONES ACCIÓN */
         .action-link { color: var(--accent); cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.2s; }
         .action-link:hover { filter: brightness(1.3); text-decoration: underline; }
 
@@ -220,7 +219,19 @@
     };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff'];
+
+    // LISTA EXPANDIDA DE COLORES
+    const colors = [
+        '#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff',
+        '#FFD700', '#FF8C00', '#FF4500', '#ADFF2F', '#00FF00', '#00FA9A', '#00FFFF', '#1E90FF',
+        '#9370DB', '#FF69B4', '#F08080', '#20B2AA', '#87CEFA', '#7B68EE', '#FFA500', '#7FFF00',
+        '#DDA0DD', '#00BFFF', '#FF1493', '#32CD32', '#FAFAD2', '#E0FFFF', '#B0E0E6', '#FFB6C1',
+        '#98FB98', '#AFEEEE', '#DB7093', '#708090', '#00CED1', '#48D1CC', '#9ACD32', '#BA55D3',
+        '#F4A460', '#C71585', '#6A5ACD', '#40E0D0', '#FF6347', '#008080', '#800080', '#808000',
+        '#000080', '#008000', '#800000', '#008080', '#EE82EE', '#F5DEB3', '#D2691E', '#5F9EA0',
+        '#7FFF00', '#D2B48C', '#A52A2A', '#DEB887', '#5DADE2', '#48C9B0', '#F4D03F', '#EB984E'
+    ];
+
     let isInitialLoad = true;
     let currentMediaData = null;
     let currentMediaType = null;
@@ -248,7 +259,6 @@
     function toggleReplyBox(id) { document.getElementById(`reply-box-${id}`).classList.toggle('active'); }
     function toggleRepliesList(id) { document.getElementById(`replies-list-${id}`).classList.toggle('active'); }
 
-    /* GESTIÓN DE ARCHIVOS */
     const dropZone = document.getElementById('dropZone');
     dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
     dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); });
@@ -280,7 +290,6 @@
         document.getElementById('fileInput').value = '';
     }
 
-    /* MODAL ENCUESTAS */
     function openPollModal() { document.getElementById('pollModal').style.display = 'flex'; }
     function closePollModal() { document.getElementById('pollModal').style.display = 'none'; }
     function addPollOption() {
@@ -315,7 +324,6 @@
         localStorage.setItem(localKey, 'true');
     }
 
-    /* ACCIONES DE COMENTARIO */
     function addComment(parentId = null) {
         const userInput = parentId ? document.getElementById(`user-${parentId}`) : document.getElementById('username');
         const textInput = parentId ? document.getElementById(`text-${parentId}`) : document.getElementById('commentText');
@@ -354,7 +362,6 @@
         }
     }
 
-    /* RENDERIZADO PRINCIPAL */
     function drawPoll(msgId, encuesta) {
         if (!encuesta) return "";
         const total = Object.values(encuesta.opciones).reduce((a, b) => a + (b.votos || 0), 0);
@@ -421,7 +428,6 @@
                 rDiv.innerHTML = `<div class="message" style="--u-color:#444; margin-top:10px; padding:10px; border-width:1px;"><div class="u-header"><span class="u-name" style="font-size:0.7rem;">${post.autor}</span></div><div class="u-msg" style="font-size:0.85rem; margin:0;">${post.mensaje}</div></div>`;
                 rList.appendChild(rDiv);
                 
-                // Actualizar el contador visual inmediatamente
                 const counter = document.getElementById(`count-${post.parentId}`);
                 if(counter) counter.innerText = parseInt(counter.innerText) + 1;
             }
@@ -463,7 +469,6 @@
             }
         });
 
-        // Actualizar todos los contadores de respuestas
         for (let parentId in replyCounts) {
             const counter = document.getElementById(`count-${parentId}`);
             if (counter) counter.innerText = replyCounts[parentId];
