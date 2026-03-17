@@ -37,109 +37,176 @@
             content: "";
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://preview.redd.it/nala-estaba-sufriendo-jsjjsjaj-v0-2ivvf8feb0ke1.jpeg?auto=webp&s=4dd8ae471d1c5cb0f13178d8b31fe2428d7116d1') no-repeat center center fixed;
-            background-size: cover; opacity: 0.35; filter: blur(2px); z-index: -1;
+            background-size: cover; opacity: 0.35;
+            filter: blur(2px); z-index: -1;
         }
 
-        .orb { position: fixed; border-radius: 50%; filter: blur(80px); z-index: -2; animation: float 15s infinite ease-in-out alternate; }
-        .orb-1 { width: 35vw; height: 35vw; background: rgba(125, 95, 255, 0.12); top: -10%; left: -10%; }
-        .orb-2 { width: 45vw; height: 45vw; background: rgba(0, 242, 254, 0.08); bottom: -10%; right: -10%; }
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px);
+        z-index: -2; animation: float 15s infinite ease-in-out alternate; }
+        .orb-1 { width: 35vw;
+        height: 35vw; background: rgba(125, 95, 255, 0.12); top: -10%; left: -10%;
+        }
+        .orb-2 { width: 45vw; height: 45vw; background: rgba(0, 242, 254, 0.08);
+        bottom: -10%; right: -10%; }
 
-        @keyframes float { 100% { transform: translateY(30px) translateX(30px); } }
+        @keyframes float { 100% { transform: translateY(30px) translateX(30px);
+        } }
 
         @keyframes glitch {
-            0% { text-shadow: 2px 0 var(--yt), -2px 0 var(--accent); transform: translate(0); }
-            20% { text-shadow: -2px 0 var(--kick), 2px 0 var(--yt); transform: translate(-1px, 1px); }
-            40% { text-shadow: 2px 0 var(--accent), -2px 0 var(--kick); transform: translate(-1px, -1px); }
-            100% { text-shadow: -2px 0 var(--accent), 2px 0 var(--kick); transform: translate(0); }
+            0% { text-shadow: 2px 0 var(--yt), -2px 0 var(--accent);
+            transform: translate(0); }
+            20% { text-shadow: -2px 0 var(--kick), 2px 0 var(--yt);
+            transform: translate(-1px, 1px); }
+            40% { text-shadow: 2px 0 var(--accent), -2px 0 var(--kick);
+            transform: translate(-1px, -1px); }
+            100% { text-shadow: -2px 0 var(--accent), 2px 0 var(--kick);
+            transform: translate(0); }
         }
 
         .logo {
-            font-size: clamp(2.5rem, 8vw, 4rem); font-weight: 900; letter-spacing: 10px;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 900; letter-spacing: 10px;
             background: linear-gradient(to bottom, #fff, var(--accent));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-transform: uppercase; animation: glitch 0.3s infinite linear;
             margin-bottom: 10px;
         }
 
-        .container { width: 100%; max-width: 650px; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 650px; z-index: 1; display: flex;
+        flex-direction: column; align-items: center; }
         
         .social-links { 
-            display: flex; gap: 15px; 
+            display: flex;
+            gap: 15px; 
             margin: 10px 0 30px 0; 
             justify-content: center; 
             width: 100%;
         }
-        .social-btn { padding: 8px 18px; border-radius: 20px; text-decoration: none; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; }
-        .btn-kick { background: var(--kick); color: black; }
-        .btn-yt { background: var(--yt); color: white; }
-        .btn-ig { background: linear-gradient(45deg, #f09433, #bc1888); color: white; }
+        .social-btn { padding: 8px 18px; border-radius: 20px; text-decoration: none; font-weight: 900;
+        font-size: 0.75rem; text-transform: uppercase; }
+        .btn-kick { background: var(--kick); color: black;
+        }
+        .btn-yt { background: var(--yt); color: white;
+        }
+        .btn-ig { background: linear-gradient(45deg, #f09433, #bc1888); color: white;
+        }
 
         .menu-toggle {
-            position: fixed; top: 25px; right: 25px; z-index: 1001;
+            position: fixed;
+            top: 25px; right: 25px; z-index: 1001;
             background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px; border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; gap: 5px;
+            padding: 12px; border-radius: 12px; cursor: pointer; display: flex;
+            flex-direction: column; gap: 5px;
         }
-        .menu-toggle span { display: block; width: 25px; height: 3px; background: white; border-radius: 2px; }
+        .menu-toggle span { display: block; width: 25px;
+        height: 3px; background: white; border-radius: 2px; }
 
         .top-section {
-            position: fixed; top: 0; right: -320px; width: 300px; height: 100vh;
+            position: fixed;
+            top: 0; right: -320px; width: 300px; height: 100vh;
             background: rgba(10, 10, 20, 0.98); backdrop-filter: blur(20px);
-            z-index: 1000; padding: 80px 20px 20px; box-sizing: border-box; transition: 0.5s ease; overflow-y: auto;
+            z-index: 1000;
+            padding: 80px 20px 20px; box-sizing: border-box; transition: 0.5s ease; overflow-y: auto;
         }
-        .top-section.active { right: 0; }
-        .top-box { background: rgba(255, 255, 255, 0.03); border-radius: 15px; padding: 10px; margin-bottom: 20px; }
-        .top-item { font-size: 0.7rem; background: rgba(0, 0, 0, 0.3); padding: 8px; border-radius: 8px; margin-bottom: 5px; border-left: 3px solid var(--c); cursor: pointer; transition: transform 0.2s; }
-        .top-item:hover { transform: translateX(-5px); background: rgba(255,255,255,0.05); }
+        .top-section.active { right: 0;
+        }
+        .top-box { background: rgba(255, 255, 255, 0.03); border-radius: 15px; padding: 10px;
+        margin-bottom: 20px; }
+        .top-item { font-size: 0.7rem; background: rgba(0, 0, 0, 0.3);
+        padding: 8px; border-radius: 8px; margin-bottom: 5px; border-left: 3px solid var(--c); cursor: pointer; transition: transform 0.2s;
+        }
+        .top-item:hover { transform: translateX(-5px); background: rgba(255,255,255,0.05);
+        }
 
-        .input-card { width: 100%; background: var(--card-bg); padding: 25px; border-radius: 20px; margin-bottom: 40px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.05); }
-        input, textarea { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 12px; margin-bottom: 12px; border-radius: 10px; color: white; box-sizing: border-box; font-family: inherit; }
+        .input-card { width: 100%; background: var(--card-bg); padding: 25px; border-radius: 20px; margin-bottom: 40px;
+        box-sizing: border-box; border: 1px solid rgba(255,255,255,0.05); }
+        input, textarea { width: 100%;
+        background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 12px; margin-bottom: 12px; border-radius: 10px; color: white; box-sizing: border-box; font-family: inherit;
+        }
         
-        .send-btn { width: 100%; padding: 14px; background: white; color: black; border: none; font-weight: 900; border-radius: 10px; cursor: pointer; text-transform: uppercase; flex: 1; }
-        .poll-trigger-btn { padding: 0 20px; background: var(--accent); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.2rem; }
+        .send-btn { width: 100%;
+        padding: 14px; background: white; color: black; border: none; font-weight: 900; border-radius: 10px; cursor: pointer; text-transform: uppercase; flex: 1;
+        }
+        .poll-trigger-btn { padding: 0 20px; background: var(--accent); color: white; border: none;
+        border-radius: 10px; cursor: pointer; font-size: 1.2rem; }
         
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(3px);
             z-index: 2000; display: none; justify-content: center; align-items: center;
         }
         .modal-box {
-            background: #0f0f19; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px;
+            background: #0f0f19;
+            padding: 25px; border-radius: 20px; width: 90%; max-width: 400px;
             border: 2px solid var(--accent); box-shadow: 0 0 15px rgba(125, 95, 255, 0.3);
         }
-        .add-opt-btn { background: none; border: 1px dashed #555; color: #aaa; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-family: inherit; }
-        .add-opt-btn:hover { border-color: white; color: white; }
+        .add-opt-btn { background: none; border: 1px dashed #555; color: #aaa; width: 100%;
+        padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-family: inherit;
+        }
+        .add-opt-btn:hover { border-color: white; color: white;
+        }
 
-        .poll-container { margin: 15px 0; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
-        .poll-title { font-weight: bold; margin-bottom: 12px; color: var(--accent); font-size: 0.9rem; }
-        .poll-option { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; position: relative; overflow: hidden; transition: 0.2s; }
-        .poll-option:hover { border-color: var(--u-color); }
-        .poll-bar { position: absolute; left: 0; top: 0; height: 100%; background: var(--u-color); opacity: 0.2; transition: width 0.5s ease-out; z-index: 0; }
-        .poll-text { position: relative; z-index: 1; display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .poll-container { margin: 15px 0; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.05); }
+        .poll-title { font-weight: bold; margin-bottom: 12px; color: var(--accent);
+        font-size: 0.9rem; }
+        .poll-option { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 10px;
+        border-radius: 8px; margin-bottom: 8px; cursor: pointer; position: relative; overflow: hidden; transition: 0.2s;
+        }
+        .poll-option:hover { border-color: var(--u-color);
+        }
+        .poll-bar { position: absolute; left: 0; top: 0; height: 100%; background: var(--u-color);
+        opacity: 0.2; transition: width 0.5s ease-out; z-index: 0; }
+        .poll-text { position: relative;
+        z-index: 1; display: flex; justify-content: space-between; font-size: 0.85rem; }
 
-        .comment-thread { width: 100%; margin-bottom: 30px; }
-        .message { background: var(--card-bg); padding: 20px; border-radius: 18px; border: 2px solid var(--u-color); width: 100%; box-sizing: border-box; scroll-margin-top: 100px; transition: transform 0.2s; }
-        .u-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .u-name { color: var(--u-color); font-weight: 900; font-size: 0.8rem; }
-        .u-time { font-size: 0.7rem; color: #555; }
-        .u-msg { color: #eee; font-size: 1rem; line-height: 1.5; white-space: pre-wrap; }
+        .comment-thread { width: 100%;
+        margin-bottom: 30px; }
+        .message { background: var(--card-bg); padding: 20px; border-radius: 18px;
+        border: 2px solid var(--u-color); width: 100%; box-sizing: border-box; scroll-margin-top: 100px; transition: transform 0.2s;
+        }
+        .u-header { display: flex; justify-content: space-between; margin-bottom: 10px;
+        }
+        .u-name { color: var(--u-color); font-weight: 900; font-size: 0.8rem;
+        }
+        .u-time { font-size: 0.7rem; color: #555;
+        }
+        .u-msg { color: #eee; font-size: 1rem; line-height: 1.5; white-space: pre-wrap;
+        }
 
-        .actions { display: flex; gap: 15px; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; font-size: 0.8rem; }
-        .vote-btn { background: none; border: none; color: #777; cursor: pointer; padding: 0; }
-        .voted-up { color: var(--kick); }
-        .voted-down { color: var(--yt); }
-        .voted-tomato { color: var(--tomato); }
-        .reply-btn { color: var(--accent); font-weight: bold; cursor: pointer; opacity: 0.8; }
-        .reply-btn:hover { opacity: 1; text-decoration: underline; }
+        .actions { display: flex; gap: 15px; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05);
+        padding-top: 12px; font-size: 0.8rem; }
+        .vote-btn { background: none; border: none; color: #777;
+        cursor: pointer; padding: 0; }
+        .voted-up { color: var(--kick);
+        }
+        .voted-down { color: var(--yt);
+        }
+        .voted-tomato { color: var(--tomato);
+        }
+        .reply-btn { color: var(--accent); font-weight: bold; cursor: pointer; opacity: 0.8;
+        }
+        .reply-btn:hover { opacity: 1; text-decoration: underline;
+        }
 
-        .replies-container { margin-left: clamp(15px, 5vw, 30px); border-left: 2px solid #222; padding-left: 15px; margin-top: 10px; display: none; }
-        .replies-container.active { display: block; }
-        .reply-box { margin-top: 15px; display: none; padding: 15px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px dashed #444; }
+        .replies-container { margin-left: clamp(15px, 5vw, 30px); border-left: 2px solid #222; padding-left: 15px;
+        margin-top: 10px; display: none; }
+        .replies-container.active { display: block;
+        }
+        .reply-box { margin-top: 15px; display: none; padding: 15px; background: rgba(0,0,0,0.4); border-radius: 12px;
+        border: 1px dashed #444; }
 
-        .highlight-active { animation: highlight-msg 1.5s ease-out; }
-        @keyframes highlight-msg { 0% { box-shadow: 0 0 0px transparent; } 50% { box-shadow: 0 0 30px var(--u-color); transform: scale(1.02); } 100% { box-shadow: 0 0 0px transparent; } }
+        .highlight-active { animation: highlight-msg 1.5s ease-out;
+        }
+        @keyframes highlight-msg { 0% { box-shadow: 0 0 0px transparent;
+        } 50% { box-shadow: 0 0 30px var(--u-color); transform: scale(1.02); } 100% { box-shadow: 0 0 0px transparent;
+        } }
 
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
-        .overlay.active { display: block; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%;
+        height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
+        .overlay.active { display: block;
+        }
     </style>
 </head>
 <body>
@@ -163,21 +230,26 @@
     <div class="modal-box">
         <h3 style="margin-top: 0; color: white;">Lanzar Encuesta 📊</h3>
         <input type="text" id="pollUsername" placeholder="Tu Nickname..." style="border-color: #333; margin-bottom: 10px;">
-        <input type="text" id="pollTheme" placeholder="Tema/Pregunta de la encuesta..." style="border-color: var(--accent); margin-bottom: 15px;">
+        <input type="text" id="pollTheme" placeholder="Tema/Pregunta de la encuesta..." style="border-color: var(--accent);
+        margin-bottom: 15px;">
         <div id="pollOptionsContainer">
             <input type="text" class="p-opt" placeholder="Opción 1">
             <input type="text" class="p-opt" placeholder="Opción 2">
         </div>
         <button class="add-opt-btn" id="btnAddOption" onclick="addPollOption()">+ Añadir opción (Máx 4)</button>
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button class="send-btn" onclick="closePollModal()" style="background: #333; color: white;">Cancelar</button>
-            <button class="send-btn" onclick="sendPollDirect()" style="background: var(--accent); color: white;">Enviar Encuesta</button>
+        <div style="display: flex;
+        gap: 10px; margin-top: 10px;">
+            <button class="send-btn" onclick="closePollModal()" style="background: #333;
+            color: white;">Cancelar</button>
+            <button class="send-btn" onclick="sendPollDirect()" style="background: var(--accent);
+            color: white;">Enviar Encuesta</button>
         </div>
     </div>
 </div>
 
 <div class="container">
-    <header style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <header style="width: 100%;
+    display: flex; flex-direction: column; align-items: center;">
         <h1 class="logo">NALA VOID</h1>
         <div class="social-links">
             <a href="https://kick.com/luisardito" target="_blank" class="social-btn btn-kick">Kick</a>
@@ -187,9 +259,11 @@
     </header>
 
     <div class="input-card">
-        <input type="text" id="username" placeholder="Nickname...">
+        <input type="text" id="username" 
+        placeholder="Nickname...">
         <textarea id="commentText" rows="3" placeholder="Comenta algo papu..."></textarea>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex;
+        gap: 10px;">
             <button class="poll-trigger-btn" onclick="openPollModal()" title="Crear Encuesta">📊</button>
             <button class="send-btn" onclick="addComment(null)">PUBLICA TU WEBADA</button>
         </div>
@@ -213,13 +287,13 @@
     const database = firebase.database();
     const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff'];
 
-    // Lógica para el sonido de notificación añadida aquí
+    // LOGICA DEL SONIDO
     let isInitialLoad = true;
 
     function playNotification() {
         const audio = document.getElementById('notifSound');
         audio.currentTime = 0;
-        audio.play().catch(e => console.log("El navegador bloqueó el audio hasta que interactúes con la página."));
+        audio.play().catch(e => console.log("El sonido se bloqueó porque el usuario aún no ha hecho clic en la página."));
     }
 
     function tiempoRelativo(fecha) {
@@ -280,7 +354,8 @@
         }
 
         const pollData = {
-            pregunta: theme || "Encuesta sin título",
+            pregunta: theme ||
+            "Encuesta sin título",
             opciones: validOptions
         };
         database.ref('comentarios').push({
@@ -310,7 +385,8 @@
     }
 
     function addComment(parentId = null) {
-        const user = parentId ? document.getElementById(`user-${parentId}`).value.trim() : document.getElementById('username').value.trim();
+        const user = parentId ?
+        document.getElementById(`user-${parentId}`).value.trim() : document.getElementById('username').value.trim();
         const text = parentId ? document.getElementById(`text-${parentId}`).value.trim() : document.getElementById('commentText').value.trim();
         if (user === "ADMIN_NALA" && text === "RESETEAR") {
             if(confirm("¿Limpiar todo?")) database.ref('comentarios').remove();
@@ -363,7 +439,7 @@
         const allData = [];
         snapshot.forEach(child => { const d = child.val(); d.id = child.key; allData.push(d); });
 
-        // Activador del sonido de notificación añadido aquí
+        // AQUI ESTA EL DISPARADOR DEL SONIDO
         if (!isInitialLoad) {
             playNotification();
         }
@@ -372,7 +448,8 @@
         const mainPosts = allData.filter(d => !d.parentId).reverse();
 
         mainPosts.forEach(post => {
-            const postReplies = allData.filter(d => d.parentId === post.id);
+            const postReplies = 
+            allData.filter(d => d.parentId === post.id);
             const myVote = localStorage.getItem('v_' + post.id);
             
             let pollHtml = "";
@@ -395,14 +472,17 @@
                         <span class="u-name">${post.autor}</span>
                         <span class="u-time">${tiempoRelativo(post.fecha)} ago</span>
                     </div>
-                    ${post.mensaje ? `<div class="u-msg">${post.mensaje.replace(/</g, "&lt;")}</div>` : ''}
+                    ${post.mensaje ?
+                    `<div class="u-msg">${post.mensaje.replace(/</g, "&lt;")}</div>` : ''}
                     ${pollHtml}
                     <div class="actions">
                         <button class="vote-btn ${myVote==='likes'?'voted-up':''}" onclick="handleVote('${post.id}','likes')">👍 ${post.likes||0}</button>
-                        <button class="vote-btn ${myVote==='dislikes'?'voted-down':''}" onclick="handleVote('${post.id}','dislikes')">👎 ${post.dislikes||0}</button>
+                        <button class="vote-btn ${myVote==='dislikes'?'voted-down':''}" 
+                        onclick="handleVote('${post.id}','dislikes')">👎 ${post.dislikes||0}</button>
                         <button class="vote-btn ${myVote==='tomates'?'voted-tomato':''}" onclick="handleVote('${post.id}','tomates')">🍅 ${post.tomates||0}</button>
                         <span class="reply-btn" onclick="toggleReplyBox('${post.id}')">💬 Responder</span>
-                        ${postReplies.length > 0 ? `<span class="reply-btn" onclick="toggleReplies('${post.id}')">👁 Ver ${postReplies.length}</span>` : ''}
+                        ${postReplies.length > 0 ?
+                        `<span class="reply-btn" onclick="toggleReplies('${post.id}')">👁 Ver ${postReplies.length}</span>` : ''}
                     </div>
                     <div class="reply-box" id="box-${post.id}">
                         <input type="text" id="user-${post.id}" placeholder="Tu Nick..."><textarea id="text-${post.id}" placeholder="Tu respuesta..."></textarea>
@@ -424,7 +504,8 @@
     function updateTop(elementId, arr, field, icon) {
         const container = document.getElementById(elementId);
         // Buscamos el puntaje más alto en esa categoría
-        const maxVal = arr.length ? Math.max(...arr.map(m => m[field] || 0)) : 0;
+        const maxVal = arr.length ?
+        Math.max(...arr.map(m => m[field] || 0)) : 0;
         
         // Solo pasan los que tienen el puntaje máximo y es al menos 1
         // Cortamos en 3 por si hay empate masivo (para que no rompa el diseño)
@@ -435,7 +516,8 @@
             item.className = 'top-item'; item.style.setProperty('--c', m.color);
             item.onclick = () => {
                 const target = document.getElementById('msg-' + m.id);
-                if (target) { toggleMenu(); target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.classList.add('highlight-active'); setTimeout(() => target.classList.remove('highlight-active'), 2000); }
+                if (target) { toggleMenu(); target.scrollIntoView({ 
+                behavior: 'smooth', block: 'center' }); target.classList.add('highlight-active'); setTimeout(() => target.classList.remove('highlight-active'), 2000); }
             };
             item.innerHTML = `${icon} <b>${m.autor}</b>: ${m.mensaje ? m.mensaje.substring(0, 15) : 'Encuesta'}...`;
             container.appendChild(item);
