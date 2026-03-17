@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NALA VOID | POXITWITTER</title>
+    <title>NALA VOID | FAN PAGE</title>
     <link rel="icon" href="https://static-cdn.jtvnw.net/jtv_user_pictures/3f87bd40-3b9a-40e0-8501-0e6c4040dc0c-profile_image-300x300.png" type="image/png">
     
     <style>
@@ -122,7 +122,7 @@
         .u-media { text-align: center; margin-bottom: 15px; }
         .u-media img, .u-media video { max-width: 100%; max-height: 450px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-        .actions { display: flex; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; flex-wrap: wrap; }
+        .actions { display: flex; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; flex-wrap: wrap; align-items: center; }
         .vote-btn { background: none; border: none; color: #666; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: 0.2s; }
         .voted-up { color: var(--kick); text-shadow: 0 0 10px rgba(83, 252, 24, 0.3); }
         .voted-down { color: var(--yt); text-shadow: 0 0 10px rgba(255, 0, 0, 0.3); }
@@ -130,6 +130,11 @@
         
         .action-link { color: var(--accent); cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.2s; }
         .action-link:hover { filter: brightness(1.3); text-decoration: underline; }
+
+        /* MODO ADMIN SECRETO */
+        .delete-btn { display: none; color: #ff4d4d; cursor: pointer; font-size: 0.9rem; font-weight: bold; margin-left: auto; transition: 0.2s; }
+        .delete-btn:hover { filter: brightness(1.3); transform: scale(1.1); }
+        body.admin-mode .delete-btn { display: inline-block; }
 
         .replies-container { margin-left: 30px; border-left: 2px solid #1a1a1a; padding-left: 20px; margin-top: 15px; }
         .reply-box { display: none; margin-bottom: 15px; }
@@ -155,7 +160,7 @@
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <div class="top-section" id="topSection">
-    <h2 style="text-align: center; font-size: 0.9rem; letter-spacing: 4px; margin-bottom: 30px;">RANKING</h2>
+    <h2 style="text-align: center; font-size: 0.9rem; letter-spacing: 4px; margin-bottom: 30px;">HALL OF FAME</h2>
     <div class="top-box"><h3>Más Queridos 👍</h3><div id="top-likes"></div></div>
     <div class="top-box"><h3>Más Odiados 💀</h3><div id="top-dislikes"></div></div>
     <div class="top-box"><h3>Tomateadas 🍅</h3><div id="top-tomates"></div></div>
@@ -203,7 +208,7 @@
     </div>
 
     <div id="comments-list" style="width: 100%;">
-        <div id="loader" class="loading-text">Cargando...⏳</div>
+        <div id="loader" class="loading-text">Cargando la guerra de momos... ⏳</div>
     </div>
 </div>
 
@@ -219,22 +224,15 @@
     };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-
-    // LISTA EXPANDIDA DE COLORES
-    const colors = [
-        '#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff',
-        '#FFD700', '#FF8C00', '#FF4500', '#ADFF2F', '#00FF00', '#00FA9A', '#00FFFF', '#1E90FF',
-        '#9370DB', '#FF69B4', '#F08080', '#20B2AA', '#87CEFA', '#7B68EE', '#FFA500', '#7FFF00',
-        '#DDA0DD', '#00BFFF', '#FF1493', '#32CD32', '#FAFAD2', '#E0FFFF', '#B0E0E6', '#FFB6C1',
-        '#98FB98', '#AFEEEE', '#DB7093', '#708090', '#00CED1', '#48D1CC', '#9ACD32', '#BA55D3',
-        '#F4A460', '#C71585', '#6A5ACD', '#40E0D0', '#FF6347', '#008080', '#800080', '#808000',
-        '#000080', '#008000', '#800000', '#008080', '#EE82EE', '#F5DEB3', '#D2691E', '#5F9EA0',
-        '#7FFF00', '#D2B48C', '#A52A2A', '#DEB887', '#5DADE2', '#48C9B0', '#F4D03F', '#EB984E'
-    ];
-
+    const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff'];
     let isInitialLoad = true;
     let currentMediaData = null;
     let currentMediaType = null;
+
+    // INICIALIZADOR MODO DIOS
+    if (localStorage.getItem('nala_admin') === 'true') {
+        document.body.classList.add('admin-mode');
+    }
 
     function playNotification() {
         const audio = document.getElementById('notifSound');
@@ -259,6 +257,7 @@
     function toggleReplyBox(id) { document.getElementById(`reply-box-${id}`).classList.toggle('active'); }
     function toggleRepliesList(id) { document.getElementById(`replies-list-${id}`).classList.toggle('active'); }
 
+    /* GESTIÓN DE ARCHIVOS */
     const dropZone = document.getElementById('dropZone');
     dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
     dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); });
@@ -290,6 +289,7 @@
         document.getElementById('fileInput').value = '';
     }
 
+    /* MODAL ENCUESTAS */
     function openPollModal() { document.getElementById('pollModal').style.display = 'flex'; }
     function closePollModal() { document.getElementById('pollModal').style.display = 'none'; }
     function addPollOption() {
@@ -324,6 +324,7 @@
         localStorage.setItem(localKey, 'true');
     }
 
+    /* ACCIONES DE COMENTARIO Y TRUCO ADMIN */
     function addComment(parentId = null) {
         const userInput = parentId ? document.getElementById(`user-${parentId}`) : document.getElementById('username');
         const textInput = parentId ? document.getElementById(`text-${parentId}`) : document.getElementById('commentText');
@@ -332,9 +333,25 @@
         const media = parentId ? null : currentMediaData;
         const mType = parentId ? null : currentMediaType;
 
+        // ACTIVADOR MODO DIOS
+        if (text === "/nala_admin") {
+            localStorage.setItem('nala_admin', 'true');
+            document.body.classList.add('admin-mode');
+            textInput.value = "";
+            alert("🔥 MODO DIOS ACTIVADO: Ahora ves los tachos de basura.");
+            return;
+        }
+        if (text === "/nala_salir") {
+            localStorage.removeItem('nala_admin');
+            document.body.classList.remove('admin-mode');
+            textInput.value = "";
+            alert("Modo Dios Desactivado.");
+            return;
+        }
+        
         if (user === "ADMIN_NALA" && text === "RESETEAR") { database.ref('comentarios').remove(); return; }
         if (!text && !media) return;
-        
+
         database.ref('comentarios').push({ 
             autor: user || "Anónimo", 
             mensaje: text, 
@@ -350,6 +367,13 @@
         if(!parentId) { textInput.value = ""; clearMedia(); } else { textInput.value = ""; }
     }
 
+    // FUNCIÓN ELIMINAR COMENTARIO (SOLO ADMIN)
+    function deleteComment(id) {
+        if (confirm("¿Seguro que quieres borrar esta webada?")) {
+            database.ref('comentarios/' + id).remove();
+        }
+    }
+
     function handleVote(msgId, voteType) {
         const myVote = localStorage.getItem('v_' + msgId);
         if (myVote === voteType) {
@@ -362,6 +386,7 @@
         }
     }
 
+    /* RENDERIZADO PRINCIPAL */
     function drawPoll(msgId, encuesta) {
         if (!encuesta) return "";
         const total = Object.values(encuesta.opciones).reduce((a, b) => a + (b.votos || 0), 0);
@@ -369,7 +394,8 @@
         for (let k in encuesta.opciones) {
             const opt = encuesta.opciones[k];
             const p = total > 0 ? Math.round((opt.votos/total)*100) : 0;
-            html += `<div style="background:rgba(255,255,255,0.05); margin:5px 0; padding:8px; border-radius:5px; position:relative; cursor:pointer;" onclick="votePollOption('${msgId}', '${k}')">
+            html += `<div style="background:rgba(255,255,255,0.05); margin:5px 0; padding:8px; border-radius:5px; position:relative; cursor:pointer;"
+                onclick="votePollOption('${msgId}', '${k}')">
                 <div style="background:var(--accent); position:absolute; left:0; top:0; height:100%; width:${p}%; opacity:0.2; transition:0.3s;"></div>
                 <div style="position:relative; display:flex; justify-content:space-between; font-size:0.9rem;"><span>${opt.texto}</span><span>${p}% (${opt.votos || 0})</span></div>
             </div>`;
@@ -377,6 +403,18 @@
         html += `</div>`;
         return html;
     }
+
+    // ESCUCHADOR PARA BORRAR DEL DOM CUANDO EL ADMIN ELIMINA
+    database.ref('comentarios').on('child_removed', (snapshot) => {
+        const post = snapshot.val();
+        if(!post.parentId) {
+            const thread = document.getElementById(`thread-${snapshot.key}`);
+            if (thread) thread.remove();
+        } else {
+            const reply = document.getElementById(`reply-msg-${snapshot.key}`);
+            if (reply) reply.remove();
+        }
+    });
 
     database.ref('comentarios').on('child_added', (snapshot) => {
         const loader = document.getElementById('loader');
@@ -407,9 +445,9 @@
                         <button class="vote-btn btn-l ${myVote==='likes'?'voted-up':''}" onclick="handleVote('${post.id}','likes')">👍 <span>${post.likes||0}</span></button>
                         <button class="vote-btn btn-d ${myVote==='dislikes'?'voted-down':''}" onclick="handleVote('${post.id}','dislikes')">👎 <span>${post.dislikes||0}</span></button>
                         <button class="vote-btn btn-t ${myVote==='tomates'?'voted-tomato':''}" onclick="handleVote('${post.id}','tomates')">🍅 <span>${post.tomates||0}</span></button>
-                        
                         <span class="action-link" onclick="toggleReplyBox('${post.id}')">💬 Responder</span>
                         <span class="action-link" onclick="toggleRepliesList('${post.id}')">👁️ Respuestas (<span id="count-${post.id}">0</span>)</span>
+                        <span class="delete-btn" onclick="deleteComment('${post.id}')" title="Borrar Comentario">🗑️</span>
                     </div>
                 </div>
                 <div class="replies-container" id="replies-${post.id}">
@@ -425,7 +463,14 @@
             const rList = document.getElementById(`replies-list-${post.parentId}`);
             if(rList) {
                 const rDiv = document.createElement('div');
-                rDiv.innerHTML = `<div class="message" style="--u-color:#444; margin-top:10px; padding:10px; border-width:1px;"><div class="u-header"><span class="u-name" style="font-size:0.7rem;">${post.autor}</span></div><div class="u-msg" style="font-size:0.85rem; margin:0;">${post.mensaje}</div></div>`;
+                rDiv.id = `reply-msg-${post.id}`;
+                rDiv.innerHTML = `<div class="message" style="--u-color:#444; margin-top:10px; padding:10px; border-width:1px; position:relative;">
+                    <div class="u-header"><span class="u-name" style="font-size:0.7rem;">${post.autor}</span></div>
+                    <div class="u-msg" style="font-size:0.85rem; margin:0; display:flex; justify-content:space-between; align-items:center;">
+                        <span>${post.mensaje}</span>
+                        <span class="delete-btn" onclick="deleteComment('${post.id}')" title="Borrar Respuesta">🗑️</span>
+                    </div>
+                </div>`;
                 rList.appendChild(rDiv);
                 
                 const counter = document.getElementById(`count-${post.parentId}`);
