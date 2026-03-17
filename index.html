@@ -133,6 +133,9 @@
         .replies-container { margin-left: 30px; border-left: 2px solid #1a1a1a; padding-left: 20px; margin-top: 15px; display: none; }
         .replies-container.active { display: block; }
 
+        .highlight-active { animation: highlight-msg 1.5s ease-out; }
+        @keyframes highlight-msg { 0% { box-shadow: 0 0 0px transparent; } 50% { box-shadow: 0 0 30px var(--u-color); transform: scale(1.02); } 100% { box-shadow: 0 0 0px transparent; } }
+
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; display: none; }
         .overlay.active { display: block; }
     </style>
@@ -208,7 +211,6 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff'];
-
     let isInitialLoad = true;
     let currentMediaData = null;
     let currentMediaType = null;
@@ -241,7 +243,6 @@
         e.preventDefault(); dropZone.classList.remove('drag-over');
         if(e.dataTransfer.files.length > 0) processFile(e.dataTransfer.files[0]);
     });
-
     function handleFileSelect(e) { if(e.target.files.length > 0) processFile(e.target.files[0]); }
 
     function processFile(file) {
@@ -303,7 +304,6 @@
 
         if (user === "ADMIN_NALA" && text === "RESETEAR") { database.ref('comentarios').remove(); return; }
         if (!text && !media) return;
-
         database.ref('comentarios').push({ 
             autor: user || "Anónimo", 
             mensaje: text, 
@@ -315,7 +315,6 @@
             likes: 0, dislikes: 0, tomates: 0, 
             fecha: Date.now() 
         });
-        
         if(!parentId) { document.getElementById('commentText').value = ""; clearMedia(); }
     }
 
@@ -331,19 +330,19 @@
         }
     }
 
-    /* RENDERIZADO PRINCIPAL (AQUÍ ESTÁ EL FIX DEL BUG) */
-    database.ref('comentarios').on('value', (snapshot) => {
-        const list = document.getElementById('comments-list');
-        list.innerHTML = "";
-        const allData = [];
-        snapshot.forEach(child => { const d = child.val(); d.id = child.key; allData.push(d); });
+    /* RENDERIZADO PRINCIPAL (FIJO PARA EVITAR REINICIO DE VIDEOS) */
+    database.ref('comentarios').on('child_added', (snapshot) => {
+        const post = snapshot.val();
+        post.id = snapshot.key;
         
-        if (!isInitialLoad) playNotification();
-        isInitialLoad = false;
-
-        allData.filter(d => !d.parentId).reverse().forEach(post => {
-            const postReplies = allData.filter(d => d.parentId === post.id);
+        if (!post.parentId) {
+            const list = document.getElementById('comments-list');
+            const threadDiv = document.createElement('div');
+            threadDiv.className = 'comment-thread';
+            threadDiv.id = `thread-${post.id}`;
+            
             const myVote = localStorage.getItem('v_' + post.id);
+            const mediaHtml = post.media ? (post.mediaType === 'video' ? `<div class="u-media"><video src="${post.media}" controls></video></div>` : `<div class="u-media"><img src="${post.media}"></div>`) : "";
             
             let pollHtml = "";
             if (post.encuesta) {
@@ -360,14 +359,6 @@
                 pollHtml += `</div>`;
             }
 
-            let mediaHtml = "";
-            if(post.media) {
-                mediaHtml = post.mediaType === 'video' ? `<div class="u-media"><video src="${post.media}" controls></video></div>` : `<div class="u-media"><img src="${post.media}"></div>`;
-            }
-
-            // CREACIÓN DEL COMENTARIO (FIX: Se eliminó el post.fecha suelto que causaba los números arriba)
-            const threadDiv = document.createElement('div');
-            threadDiv.className = 'comment-thread';
             threadDiv.innerHTML = `
                 <div class="message" id="msg-${post.id}" style="--u-color: ${post.color}">
                     <div class="u-header">
@@ -378,10 +369,10 @@
                     ${mediaHtml}
                     ${pollHtml}
                     <div class="actions">
-                        <button class="vote-btn ${myVote==='likes'?'voted-up':''}" onclick="handleVote('${post.id}','likes')">👍 ${post.likes||0}</button>
-                        <button class="vote-btn ${myVote==='dislikes'?'voted-down':''}" onclick="handleVote('${post.id}','dislikes')">👎 ${post.dislikes||0}</button>
-                        <button class="vote-btn ${myVote==='tomates'?'voted-tomato':''}" onclick="handleVote('${post.id}','tomates')">🍅 ${post.tomates||0}</button>
-                        <span style="color:var(--accent); cursor:pointer; font-size:0.8rem;" onclick="document.getElementById('replies-${post.id}').classList.toggle('active')">💬 Ver Respuestas (${postReplies.length})</span>
+                        <button class="vote-btn btn-l ${myVote==='likes'?'voted-up':''}" onclick="handleVote('${post.id}','likes')">👍 <span>${post.likes||0}</span></button>
+                        <button class="vote-btn btn-d ${myVote==='dislikes'?'voted-down':''}" onclick="handleVote('${post.id}','dislikes')">👎 <span>${post.dislikes||0}</span></button>
+                        <button class="vote-btn btn-t ${myVote==='tomates'?'voted-tomato':''}" onclick="handleVote('${post.id}','tomates')">🍅 <span>${post.tomates||0}</span></button>
+                        <span style="color:var(--accent); cursor:pointer; font-size:0.8rem;" onclick="document.getElementById('replies-${post.id}').classList.toggle('active')">💬 Ver Respuestas</span>
                     </div>
                 </div>
                 <div class="replies-container" id="replies-${post.id}">
@@ -390,14 +381,45 @@
                         <input type="text" id="text-${post.id}" placeholder="Respuesta..." style="flex:2;">
                         <button onclick="addComment('${post.id}')" style="background:var(--accent); border:none; color:white; border-radius:5px; padding:0 15px; cursor:pointer;">↑</button>
                     </div>
-                    ${postReplies.map(r => `<div class="message" style="--u-color:#444; margin-top:10px; padding:10px; border-width:1px;"><div class="u-header"><span class="u-name" style="font-size:0.7rem;">${r.autor}</span></div><div class="u-msg" style="font-size:0.85rem; margin:0;">${r.mensaje}</div></div>`).join('')}
+                    <div class="replies-list"></div>
                 </div>`;
-            list.appendChild(threadDiv);
-        });
+            list.prepend(threadDiv);
+        } else {
+            const rList = document.querySelector(`#replies-${post.parentId} .replies-list`);
+            if(rList) {
+                const rDiv = document.createElement('div');
+                rDiv.innerHTML = `<div class="message" style="--u-color:#444; margin-top:10px; padding:10px; border-width:1px;"><div class="u-header"><span class="u-name" style="font-size:0.7rem;">${post.autor}</span></div><div class="u-msg" style="font-size:0.85rem; margin:0;">${post.mensaje}</div></div>`;
+                rList.appendChild(rDiv);
+            }
+        }
+        if (!isInitialLoad) playNotification();
+    });
 
+    database.ref('comentarios').on('child_changed', (snapshot) => {
+        const post = snapshot.val();
+        post.id = snapshot.key;
+        const msgEl = document.getElementById(`msg-${post.id}`);
+        if(msgEl) {
+            const myVote = localStorage.getItem('v_' + post.id);
+            const bL = msgEl.querySelector('.btn-l');
+            const bD = msgEl.querySelector('.btn-d');
+            const bT = msgEl.querySelector('.btn-t');
+            bL.querySelector('span').innerText = post.likes || 0;
+            bD.querySelector('span').innerText = post.dislikes || 0;
+            bT.querySelector('span').innerText = post.tomates || 0;
+            bL.className = `vote-btn btn-l ${myVote==='likes'?'voted-up':''}`;
+            bD.className = `vote-btn btn-d ${myVote==='dislikes'?'voted-down':''}`;
+            bT.className = `vote-btn btn-t ${myVote==='tomates'?'voted-tomato':''}`;
+        }
+    });
+
+    database.ref('comentarios').on('value', (snapshot) => {
+        const allData = [];
+        snapshot.forEach(child => { const d = child.val(); d.id = child.key; allData.push(d); });
         updateTop('top-likes', allData, 'likes', '👍');
         updateTop('top-dislikes', allData, 'dislikes', '💀');
         updateTop('top-tomates', allData, 'tomates', '🍅');
+        isInitialLoad = false;
     });
 
     function updateTop(elId, arr, field, icon) {
@@ -408,8 +430,31 @@
         filtered.forEach(m => {
             const item = document.createElement('div');
             item.className = 'top-item'; item.style.setProperty('--c', m.color);
-            let pt = m.mensaje ? m.mensaje.substring(0, 15) + '...' : 'Media';
+            
+            let pt = "";
+            if (m.mensaje) {
+                pt = m.mensaje.substring(0, 15) + '...';
+                if(m.mediaType === 'video') pt += ' (Video)';
+                else if(m.mediaType === 'image') pt += ' (Imagen)';
+            } else {
+                if(m.mediaType === 'video') pt = '(Video)';
+                else if(m.mediaType === 'image') pt = '(Imagen)';
+                else if(m.encuesta) pt = 'Encuesta...';
+                else pt = '...';
+            }
+            
             item.innerHTML = `${icon} <b>${m.autor}</b>: ${pt}`;
+            
+            item.onclick = () => {
+                const target = document.getElementById('msg-' + m.id);
+                if (target) {
+                    toggleMenu();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    target.classList.add('highlight-active');
+                    setTimeout(() => target.classList.remove('highlight-active'), 2000);
+                }
+            };
+            
             container.appendChild(item);
         });
     }
