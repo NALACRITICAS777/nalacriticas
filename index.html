@@ -64,8 +64,7 @@
         .container { width: 100%; max-width: 650px; z-index: 1; display: flex; flex-direction: column; align-items: center; }
         
         .social-links { 
-            display: flex; 
-            gap: 15px; 
+            display: flex; gap: 15px; 
             margin: 10px 0 30px 0; 
             justify-content: center; 
             width: 100%;
@@ -145,6 +144,8 @@
 </head>
 <body>
 
+<audio id="notifSound" src="https://www.myinstants.com/media/sounds/yape-notificacion.mp3" preload="auto"></audio>
+
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 
@@ -212,8 +213,17 @@
     const database = firebase.database();
     const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff'];
 
+    // Lógica para el sonido de notificación añadida aquí
+    let isInitialLoad = true;
+
+    function playNotification() {
+        const audio = document.getElementById('notifSound');
+        audio.currentTime = 0;
+        audio.play().catch(e => console.log("El navegador bloqueó el audio hasta que interactúes con la página."));
+    }
+
     function tiempoRelativo(fecha) {
-        const diff = Math.floor((Date.now() - fecha) / 1000); 
+        const diff = Math.floor((Date.now() - fecha) / 1000);
         if (diff < 60) return `ahora`;
         if (diff < 3600) return `${Math.floor(diff / 60)}m`;
         if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
@@ -264,7 +274,6 @@
                 index++;
             }
         });
-
         if (Object.keys(validOptions).length < 2) {
             alert("NIGGA, una encuesta necesita al menos 2 opciones.");
             return;
@@ -274,7 +283,6 @@
             pregunta: theme || "Encuesta sin título",
             opciones: validOptions
         };
-
         database.ref('comentarios').push({
             autor: user || "Anónimo",
             mensaje: "",
@@ -304,13 +312,11 @@
     function addComment(parentId = null) {
         const user = parentId ? document.getElementById(`user-${parentId}`).value.trim() : document.getElementById('username').value.trim();
         const text = parentId ? document.getElementById(`text-${parentId}`).value.trim() : document.getElementById('commentText').value.trim();
-
         if (user === "ADMIN_NALA" && text === "RESETEAR") {
             if(confirm("¿Limpiar todo?")) database.ref('comentarios').remove();
             return;
         }
         if (!text) return;
-
         database.ref('comentarios').push({
             autor: user || "Anónimo",
             mensaje: text,
@@ -356,6 +362,12 @@
         list.innerHTML = "";
         const allData = [];
         snapshot.forEach(child => { const d = child.val(); d.id = child.key; allData.push(d); });
+
+        // Activador del sonido de notificación añadido aquí
+        if (!isInitialLoad) {
+            playNotification();
+        }
+        isInitialLoad = false;
 
         const mainPosts = allData.filter(d => !d.parentId).reverse();
 
@@ -411,14 +423,12 @@
 
     function updateTop(elementId, arr, field, icon) {
         const container = document.getElementById(elementId);
-        
         // Buscamos el puntaje más alto en esa categoría
         const maxVal = arr.length ? Math.max(...arr.map(m => m[field] || 0)) : 0;
         
         // Solo pasan los que tienen el puntaje máximo y es al menos 1
         // Cortamos en 3 por si hay empate masivo (para que no rompa el diseño)
         const filtered = arr.filter(m => (m[field] || 0) === maxVal && maxVal >= 1).slice(0, 3);
-        
         container.innerHTML = filtered.length ? "" : "<p style='font-size:0.5rem; color:#444;'>...</p>";
         filtered.forEach(m => {
             const item = document.createElement('div');
