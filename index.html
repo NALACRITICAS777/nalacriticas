@@ -104,10 +104,13 @@
         .poll-trigger-btn { padding: 0 20px; background: var(--accent); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .poll-trigger-btn:hover { filter: brightness(1.2); }
 
-        /* MODALES */
+        /* MODALES Y BOTÓN AÑADIR OPCIÓN ARREGLADO */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 2000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: #0f0f19; padding: 30px; border-radius: 24px; width: 90%; max-width: 400px; border: 1px solid var(--accent); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         
+        .add-opt-btn { background: none; border: 1px dashed #555; color: #aaa; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-family: inherit; transition: 0.2s; }
+        .add-opt-btn:hover { border-color: white; color: white; background: rgba(255,255,255,0.05); }
+
         /* COMENTARIOS */
         .comment-thread { width: 100%; margin-bottom: 25px; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -138,6 +141,10 @@
 
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; display: none; }
         .overlay.active { display: block; }
+
+        /* ESTILO PARA EL TEXTO DE CARGA */
+        .loading-text { text-align: center; color: var(--accent); font-weight: bold; padding: 30px; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
     </style>
 </head>
 <body>
@@ -151,7 +158,7 @@
     <h2 style="text-align: center; font-size: 0.9rem; letter-spacing: 4px; margin-bottom: 30px;">HALL OF FAME</h2>
     <div class="top-box"><h3>Más Queridos 👍</h3><div id="top-likes"></div></div>
     <div class="top-box"><h3>Más Odiados 💀</h3><div id="top-dislikes"></div></div>
-    <div class="top-box"><h3>Tomateados 🍅</h3><div id="top-tomates"></div></div>
+    <div class="top-box"><h3>Tomateadas 🍅</h3><div id="top-tomates"></div></div>
 </div>
 
 <div class="modal-overlay" id="pollModal">
@@ -191,11 +198,13 @@
         <div style="display: flex; gap: 10px;">
             <button class="poll-trigger-btn" onclick="openPollModal()" title="Encuesta">📊</button>
             <button class="poll-trigger-btn" onclick="document.getElementById('fileInput').click()" title="Adjuntar">📁</button>
-            <button class="send-btn" onclick="addComment(null)">ENVIAR COMENTARIO</button>
+            <button class="send-btn" onclick="addComment(null)">ENVIAR WEBADA</button>
         </div>
     </div>
 
-    <div id="comments-list" style="width: 100%;"></div>
+    <div id="comments-list" style="width: 100%;">
+        <div id="loader" class="loading-text">Cargando la guerra de momos... ⏳</div>
+    </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
@@ -246,7 +255,7 @@
     function handleFileSelect(e) { if(e.target.files.length > 0) processFile(e.target.files[0]); }
 
     function processFile(file) {
-        if (file.size > 15 * 1024 * 1024) return alert("El archivo supera los 15MB.");
+        if (file.size > 15 * 1024 * 1024) return alert("El archivo supera los 15MB. Pon algo menos pesado causa.");
         const isVideo = file.type.startsWith('video');
         currentMediaType = isVideo ? 'video' : 'image';
         const reader = new FileReader();
@@ -255,7 +264,7 @@
             const pb = document.getElementById('mediaPreview');
             pb.style.display = 'block';
             pb.innerHTML = isVideo ? `<video src="${currentMediaData}" controls></video>` : `<img src="${currentMediaData}">`;
-            pb.innerHTML += `<br><button class="remove-media-btn" onclick="clearMedia()" style="background:red; color:white; border:none; padding:5px 10px; border-radius:5px; margin-top:10px; cursor:pointer;">Eliminar</button>`;
+            pb.innerHTML += `<br><button class="remove-media-btn" onclick="clearMedia()" style="background:red; color:white; border:none; padding:5px 10px; border-radius:5px; margin-top:10px; cursor:pointer;">Quitar archivo</button>`;
         };
         reader.readAsDataURL(file);
     }
@@ -290,9 +299,20 @@
                 index++;
             }
         });
-        if (index < 2) return alert("Mínimo 2 opciones.");
+        if (index < 2) return alert("Mínimo 2 opciones para una encuesta.");
         database.ref('comentarios').push({ autor: user || "Anónimo", mensaje: "", parentId: null, encuesta: { pregunta: theme || "Encuesta", opciones: validOptions }, media: null, mediaType: null, color: colors[Math.floor(Math.random() * colors.length)], likes: 0, dislikes: 0, tomates: 0, fecha: Date.now() });
         closePollModal();
+    }
+
+    /* SISTEMA DE VOTOS PARA ENCUESTAS REPARADO */
+    function votePollOption(msgId, optKey) {
+        const localKey = `pollVoted_${msgId}`;
+        if (localStorage.getItem(localKey)) {
+            alert("Oe, ya votaste en esta encuesta. No hagas trampa xd");
+            return;
+        }
+        database.ref(`comentarios/${msgId}/encuesta/opciones/${optKey}/votos`).transaction(v => (v || 0) + 1);
+        localStorage.setItem(localKey, 'true');
     }
 
     /* ACCIONES DE COMENTARIO */
@@ -330,8 +350,12 @@
         }
     }
 
-    /* RENDERIZADO PRINCIPAL (FIJO PARA EVITAR REINICIO DE VIDEOS) */
+    /* RENDERIZADO PRINCIPAL */
     database.ref('comentarios').on('child_added', (snapshot) => {
+        // OCULTAR TEXTO DE CARGA CUANDO LLEGA EL PRIMER MENSAJE
+        const loader = document.getElementById('loader');
+        if (loader) loader.style.display = 'none';
+
         const post = snapshot.val();
         post.id = snapshot.key;
         
@@ -351,7 +375,8 @@
                 for (let k in post.encuesta.opciones) {
                     const opt = post.encuesta.opciones[k];
                     const p = total > 0 ? Math.round((opt.votos/total)*100) : 0;
-                    pollHtml += `<div style="background:rgba(255,255,255,0.05); margin:5px 0; padding:8px; border-radius:5px; position:relative; cursor:pointer;" onclick="database.ref('comentarios/${post.id}/encuesta/opciones/${k}/votos').transaction(v=>(v||0)+1)">
+                    // REPARACIÓN: SE AÑADIÓ LA LLAMADA A votePollOption
+                    pollHtml += `<div style="background:rgba(255,255,255,0.05); margin:5px 0; padding:8px; border-radius:5px; position:relative; cursor:pointer;" onclick="votePollOption('${post.id}', '${k}')">
                         <div style="background:var(--accent); position:absolute; left:0; top:0; height:100%; width:${p}%; opacity:0.2;"></div>
                         <div style="position:relative; display:flex; justify-content:space-between;"><span>${opt.texto}</span><span>${p}%</span></div>
                     </div>`;
@@ -420,6 +445,10 @@
         updateTop('top-dislikes', allData, 'dislikes', '💀');
         updateTop('top-tomates', allData, 'tomates', '🍅');
         isInitialLoad = false;
+        
+        // POR SI NO HAY MENSAJES EN LA BASE DE DATOS
+        const loader = document.getElementById('loader');
+        if (loader && allData.length === 0) loader.style.display = 'none';
     });
 
     function updateTop(elId, arr, field, icon) {
