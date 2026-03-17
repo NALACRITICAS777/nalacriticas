@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NALA VOID | POXYTWITTER</title>
+    <title>NALA VOID | FAN PAGE</title>
     <link rel="icon" href="https://static-cdn.jtvnw.net/jtv_user_pictures/3f87bd40-3b9a-40e0-8501-0e6c4040dc0c-profile_image-300x300.png" type="image/png">
     
     <style>
@@ -154,14 +154,15 @@
 </head>
 <body>
 
-<audio id="notifSound" src="https://www.myinstants.com/media/sounds/yape-notificacion.mp3" preload="auto"></audio>
+<audio id="notifSound" src="Sonido_yape_48KBPS.mp3" preload="auto"></audio>
+
 <div class="orb orb-1"></div><div class="orb orb-2"></div>
 <div class="menu-toggle" onclick="toggleMenu()"><span></span><span></span><span></span></div>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <div class="top-section" id="topSection">
     <h2 style="text-align: center; font-size: 0.9rem; letter-spacing: 4px; margin-bottom: 30px;">HALL OF FAME</h2>
-    <div class="top-box"><h3>Más Valorado 👍</h3><div id="top-likes"></div></div>
+    <div class="top-box"><h3>Más Queridos 👍</h3><div id="top-likes"></div></div>
     <div class="top-box"><h3>Más Odiados 💀</h3><div id="top-dislikes"></div></div>
     <div class="top-box"><h3>Tomateadas 🍅</h3><div id="top-tomates"></div></div>
 </div>
@@ -203,12 +204,12 @@
         <div style="display: flex; gap: 10px;">
             <button class="poll-trigger-btn" onclick="openPollModal()" title="Encuesta">📊</button>
             <button class="poll-trigger-btn" onclick="document.getElementById('fileInput').click()" title="Adjuntar">📁</button>
-            <button class="send-btn" onclick="addComment(null)">COMENTA PAPU</button>
+            <button class="send-btn" onclick="addComment(null)">ENVIAR WEBADA</button>
         </div>
     </div>
 
     <div id="comments-list" style="width: 100%;">
-        <div id="loader" class="loading-text">Cargando... ⏳</div>
+        <div id="loader" class="loading-text">Cargando la guerra de momos... ⏳</div>
     </div>
 </div>
 
@@ -225,7 +226,9 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff'];
-    let isInitialLoad = true;
+    
+    // NUEVA LÓGICA: Guardamos el tiempo de inicio para saber si el mensaje es viejo o nuevo
+    const initTime = Date.now();
     let currentMediaData = null;
     let currentMediaType = null;
 
@@ -237,7 +240,7 @@
     function playNotification() {
         const audio = document.getElementById('notifSound');
         audio.currentTime = 0;
-        audio.play().catch(e => {});
+        audio.play().catch(e => { console.log("Clickea la página para habilitar el sonido"); });
     }
 
     function tiempoRelativo(fecha) {
@@ -477,7 +480,11 @@
                 if(counter) counter.innerText = parseInt(counter.innerText) + 1;
             }
         }
-        if (!isInitialLoad) playNotification();
+        
+        // CORRECCIÓN DEL SONIDO: Solo suena si el mensaje es más nuevo que cuando se cargó la página
+        if (post.fecha > initTime) {
+            playNotification();
+        }
     });
 
     database.ref('comentarios').on('child_changed', (snapshot) => {
@@ -522,7 +529,7 @@
         updateTop('top-likes', allData, 'likes', '👍');
         updateTop('top-dislikes', allData, 'dislikes', '💀');
         updateTop('top-tomates', allData, 'tomates', '🍅');
-        isInitialLoad = false;
+        
         const loader = document.getElementById('loader');
         if (loader && allData.length === 0) loader.style.display = 'none';
     });
