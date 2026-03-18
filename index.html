@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NALA VOID | POXYTWITTER</title>
+    <title>NALA VOID | FAN PAGE</title>
     <link rel="icon" href="https://static-cdn.jtvnw.net/jtv_user_pictures/3f87bd40-3b9a-40e0-8501-0e6c4040dc0c-profile_image-300x300.png" type="image/png">
     
     <style>
@@ -161,10 +161,10 @@
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <div class="top-section" id="topSection">
-    <h2 style="text-align: center; font-size: 0.9rem; letter-spacing: 4px; margin-bottom: 30px;"></h2>
-    <div class="top-box"><h3>Mejor Valorado 👍</h3><div id="top-likes"></div></div>
-    <div class="top-box"><h3>Más Odiado 💀</h3><div id="top-dislikes"></div></div>
-    <div class="top-box"><h3>Tomateada 🍅</h3><div id="top-tomates"></div></div>
+    <h2 style="text-align: center; font-size: 0.9rem; letter-spacing: 4px; margin-bottom: 30px;">HALL OF FAME</h2>
+    <div class="top-box"><h3>Más Queridos 👍</h3><div id="top-likes"></div></div>
+    <div class="top-box"><h3>Más Odiados 💀</h3><div id="top-dislikes"></div></div>
+    <div class="top-box"><h3>Tomateadas 🍅</h3><div id="top-tomates"></div></div>
 </div>
 
 <div class="modal-overlay" id="pollModal">
@@ -196,6 +196,7 @@
 
     <div class="input-card" id="dropZone">
         <input type="text" id="username" placeholder="Nickname...">
+   
         <textarea id="commentText" rows="3" placeholder="Escribe tu comentario o arrastra un archivo aquí..."></textarea>
         
         <div id="mediaPreview" class="media-preview-box"></div>
@@ -204,12 +205,12 @@
         <div style="display: flex; gap: 10px;">
             <button class="poll-trigger-btn" onclick="openPollModal()" title="Encuesta">📊</button>
             <button class="poll-trigger-btn" onclick="document.getElementById('fileInput').click()" title="Adjuntar">📁</button>
-            <button class="send-btn" onclick="addComment(null)">COMENTA PAPU</button>
+            <button class="send-btn" onclick="addComment(null)">ENVIAR WEBADA</button>
         </div>
     </div>
 
     <div id="comments-list" style="width: 100%;">
-        <div id="loader" class="loading-text">Cargando... ⏳</div>
+        <div id="loader" class="loading-text">Cargando la guerra de momos... ⏳</div>
     </div>
 </div>
 
@@ -218,6 +219,7 @@
 
 <script>
     const firebaseConfig = {
+       
         apiKey: "AIzaSyD3eXkFJHg7YbPUR5xsdU8JUooG-r1-zPg",
         authDomain: "q-opinas-de-luis.firebaseapp.com",
         databaseURL: "https://q-opinas-de-luis-default-rtdb.firebaseio.com",
@@ -225,8 +227,7 @@
     };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff'];
-    
+    const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff', '#ffaa00', '#ffea00', '#ff0055', '#8a2be2', '#00ff00', '#ff4500', '#1e90ff', '#ff1493', '#adff2f', '#00ced1', '#ffb6c1', '#f0e68c', '#dda0dd', '#ff99cc', '#7cfc00', '#00bfff', '#ff6347', '#ffff00', '#ff8c00', '#ba55d3', '#32cd32', '#00fa9a'];
     // NUEVA LÓGICA: Guardamos el tiempo de inicio para saber si el mensaje es viejo o nuevo
     const initTime = Date.now();
     let currentMediaData = null;
@@ -258,7 +259,8 @@
     }
 
     function toggleReplyBox(id) { document.getElementById(`reply-box-${id}`).classList.toggle('active'); }
-    function toggleRepliesList(id) { document.getElementById(`replies-list-${id}`).classList.toggle('active'); }
+    function toggleRepliesList(id) { document.getElementById(`replies-list-${id}`).classList.toggle('active');
+    }
 
     /* GESTIÓN DE ARCHIVOS */
     const dropZone = document.getElementById('dropZone');
@@ -293,8 +295,10 @@
     }
 
     /* MODAL ENCUESTAS */
-    function openPollModal() { document.getElementById('pollModal').style.display = 'flex'; }
-    function closePollModal() { document.getElementById('pollModal').style.display = 'none'; }
+    function openPollModal() { document.getElementById('pollModal').style.display = 'flex';
+    }
+    function closePollModal() { document.getElementById('pollModal').style.display = 'none';
+    }
     function addPollOption() {
         const container = document.getElementById('pollOptionsContainer');
         if (container.children.length < 4) {
@@ -329,13 +333,13 @@
 
     /* ACCIONES DE COMENTARIO Y TRUCO ADMIN */
     function addComment(parentId = null) {
-        const userInput = parentId ? document.getElementById(`user-${parentId}`) : document.getElementById('username');
+        const userInput = parentId ?
+        document.getElementById(`user-${parentId}`) : document.getElementById('username');
         const textInput = parentId ? document.getElementById(`text-${parentId}`) : document.getElementById('commentText');
         const user = userInput.value.trim();
         const text = textInput.value.trim();
         const media = parentId ? null : currentMediaData;
         const mType = parentId ? null : currentMediaType;
-
         // ACTIVADOR MODO DIOS
         if (text === "/nala_admin") {
             localStorage.setItem('nala_admin', 'true');
@@ -352,9 +356,9 @@
             return;
         }
         
-        if (user === "ADMIN_NALA" && text === "RESETEAR") { database.ref('comentarios').remove(); return; }
+        if (user === "ADMIN_NALA" && text === "RESETEAR") { database.ref('comentarios').remove();
+        return; }
         if (!text && !media) return;
-
         database.ref('comentarios').push({ 
             autor: user || "Anónimo", 
             mensaje: text, 
@@ -362,12 +366,13 @@
             encuesta: null, 
             media: media, 
             mediaType: mType, 
-            color: colors[Math.floor(Math.random() * colors.length)], 
+            color: 
+            colors[Math.floor(Math.random() * colors.length)], 
             likes: 0, dislikes: 0, tomates: 0, 
             fecha: Date.now() 
         });
-
-        if(!parentId) { textInput.value = ""; clearMedia(); } else { textInput.value = ""; }
+        if(!parentId) { textInput.value = ""; clearMedia(); } else { textInput.value = "";
+        }
     }
 
     // FUNCIÓN ELIMINAR COMENTARIO (SOLO ADMIN)
@@ -398,7 +403,7 @@
             const opt = encuesta.opciones[k];
             const p = total > 0 ? Math.round((opt.votos/total)*100) : 0;
             html += `<div style="background:rgba(255,255,255,0.05); margin:5px 0; padding:8px; border-radius:5px; position:relative; cursor:pointer;"
-                onclick="votePollOption('${msgId}', '${k}')">
+            onclick="votePollOption('${msgId}', '${k}')">
                 <div style="background:var(--accent); position:absolute; left:0; top:0; height:100%; width:${p}%; opacity:0.2; transition:0.3s;"></div>
                 <div style="position:relative; display:flex; justify-content:space-between; font-size:0.9rem;"><span>${opt.texto}</span><span>${p}% (${opt.votos || 0})</span></div>
             </div>`;
@@ -415,10 +420,10 @@
             if (thread) thread.remove();
         } else {
             const reply = document.getElementById(`reply-msg-${snapshot.key}`);
+      
             if (reply) reply.remove();
         }
     });
-
     database.ref('comentarios').on('child_added', (snapshot) => {
         const loader = document.getElementById('loader');
         if (loader) loader.style.display = 'none';
@@ -429,51 +434,63 @@
         if (!post.parentId) {
             const list = document.getElementById('comments-list');
             const threadDiv = document.createElement('div');
+     
             threadDiv.className = 'comment-thread';
             threadDiv.id = `thread-${post.id}`;
             
             const myVote = localStorage.getItem('v_' + post.id);
             const mediaHtml = post.media ? (post.mediaType === 'video' ? `<div class="u-media"><video src="${post.media}" controls></video></div>` : `<div class="u-media"><img src="${post.media}"></div>`) : "";
             
+      
             threadDiv.innerHTML = `
                 <div class="message" id="msg-${post.id}" style="--u-color: ${post.color}">
                     <div class="u-header">
                         <span class="u-name">${post.autor}</span>
                         <span class="u-time">${tiempoRelativo(post.fecha)}</span>
+ 
                     </div>
-                    ${post.mensaje ? `<div class="u-msg">${post.mensaje.replace(/</g, "&lt;")}</div>` : ''}
+                    ${post.mensaje ?
+`<div class="u-msg">${post.mensaje.replace(/</g, "&lt;")}</div>` : ''}
                     ${mediaHtml}
                     <div id="poll-ui-${post.id}">${drawPoll(post.id, post.encuesta)}</div>
                     <div class="actions">
                         <button class="vote-btn btn-l ${myVote==='likes'?'voted-up':''}" onclick="handleVote('${post.id}','likes')">👍 <span>${post.likes||0}</span></button>
+    
                         <button class="vote-btn btn-d ${myVote==='dislikes'?'voted-down':''}" onclick="handleVote('${post.id}','dislikes')">👎 <span>${post.dislikes||0}</span></button>
                         <button class="vote-btn btn-t ${myVote==='tomates'?'voted-tomato':''}" onclick="handleVote('${post.id}','tomates')">🍅 <span>${post.tomates||0}</span></button>
                         <span class="action-link" onclick="toggleReplyBox('${post.id}')">💬 Responder</span>
-                        <span class="action-link" onclick="toggleRepliesList('${post.id}')">👁️ Respuestas (<span id="count-${post.id}">0</span>)</span>
+                   
+         <span class="action-link" onclick="toggleRepliesList('${post.id}')">👁️ Respuestas (<span id="count-${post.id}">0</span>)</span>
                         <span class="delete-btn" onclick="deleteComment('${post.id}')" title="Borrar Comentario">🗑️</span>
                     </div>
                 </div>
                 <div class="replies-container" id="replies-${post.id}">
-                    <div class="reply-box" id="reply-box-${post.id}">
+        
+             <div class="reply-box" id="reply-box-${post.id}">
                         <input type="text" id="user-${post.id}" placeholder="Nick..." style="flex:1;">
                         <input type="text" id="text-${post.id}" placeholder="Escribe algo..." style="flex:2;">
-                        <button onclick="addComment('${post.id}')" style="background:var(--accent); border:none; color:white; border-radius:5px; padding:0 15px; cursor:pointer;">↑</button>
+                        <button onclick="addComment('${post.id}')" style="background:var(--accent);
+border:none; color:white; border-radius:5px; padding:0 15px; cursor:pointer;">↑</button>
                     </div>
                     <div class="replies-list" id="replies-list-${post.id}"></div>
                 </div>`;
             list.prepend(threadDiv);
         } else {
-            const rList = document.getElementById(`replies-list-${post.parentId}`);
+            const rList = 
+document.getElementById(`replies-list-${post.parentId}`);
             if(rList) {
                 const rDiv = document.createElement('div');
                 rDiv.id = `reply-msg-${post.id}`;
-                rDiv.innerHTML = `<div class="message" style="--u-color:#444; margin-top:10px; padding:10px; border-width:1px; position:relative;">
+                rDiv.innerHTML = `<div class="message" style="--u-color:#444;
+margin-top:10px; padding:10px; border-width:1px; position:relative;">
                     <div class="u-header"><span class="u-name" style="font-size:0.7rem;">${post.autor}</span></div>
-                    <div class="u-msg" style="font-size:0.85rem; margin:0; display:flex; justify-content:space-between; align-items:center;">
+                    <div class="u-msg" style="font-size:0.85rem;
+margin:0; display:flex; justify-content:space-between; align-items:center;">
                         <span>${post.mensaje}</span>
                         <span class="delete-btn" onclick="deleteComment('${post.id}')" title="Borrar Respuesta">🗑️</span>
                     </div>
                 </div>`;
+         
                 rList.appendChild(rDiv);
                 
                 const counter = document.getElementById(`count-${post.parentId}`);
@@ -481,7 +498,8 @@
             }
         }
         
-        // CORRECCIÓN DEL SONIDO: Solo suena si el mensaje es más nuevo que cuando se cargó la página
+        // 
+CORRECCIÓN DEL SONIDO: Solo suena si el mensaje es más nuevo que cuando se cargó la página
         if (post.fecha > initTime) {
             playNotification();
         }
@@ -491,21 +509,22 @@
         const post = snapshot.val();
         post.id = snapshot.key;
         const msgEl = document.getElementById(`msg-${post.id}`);
-        if(msgEl) {
+        if(msgEl) 
+{
             const pollUi = document.getElementById(`poll-ui-${post.id}`);
-            if (pollUi && post.encuesta) pollUi.innerHTML = drawPoll(post.id, post.encuesta);
+if (pollUi && post.encuesta) pollUi.innerHTML = drawPoll(post.id, post.encuesta);
 
             const myVote = localStorage.getItem('v_' + post.id);
             const bL = msgEl.querySelector('.btn-l');
-            const bD = msgEl.querySelector('.btn-d');
+const bD = msgEl.querySelector('.btn-d');
             const bT = msgEl.querySelector('.btn-t');
             bL.querySelector('span').innerText = post.likes || 0;
             bD.querySelector('span').innerText = post.dislikes || 0;
-            bT.querySelector('span').innerText = post.tomates || 0;
+bT.querySelector('span').innerText = post.tomates || 0;
             bL.className = `vote-btn btn-l ${myVote==='likes'?'voted-up':''}`;
             bD.className = `vote-btn btn-d ${myVote==='dislikes'?'voted-down':''}`;
             bT.className = `vote-btn btn-t ${myVote==='tomates'?'voted-tomato':''}`;
-        }
+}
     });
 
     database.ref('comentarios').on('value', (snapshot) => {
@@ -517,6 +536,7 @@
             d.id = child.key; 
             allData.push(d); 
             if(d.parentId) {
+  
                 replyCounts[d.parentId] = (replyCounts[d.parentId] || 0) + 1;
             }
         });
@@ -526,31 +546,33 @@
             if (counter) counter.innerText = replyCounts[parentId];
         }
 
-        updateTop('top-likes', allData, 'likes', '👍');
+        
+updateTop('top-likes', allData, 'likes', '👍');
         updateTop('top-dislikes', allData, 'dislikes', '💀');
         updateTop('top-tomates', allData, 'tomates', '🍅');
         
         const loader = document.getElementById('loader');
         if (loader && allData.length === 0) loader.style.display = 'none';
     });
-
-    function updateTop(elId, arr, field, icon) {
+function updateTop(elId, arr, field, icon) {
         const container = document.getElementById(elId);
-        const maxVal = arr.length ? Math.max(...arr.map(m => m[field] || 0)) : 0;
-        const filtered = arr.filter(m => (m[field] || 0) === maxVal && maxVal >= 1).slice(0, 3);
-        container.innerHTML = filtered.length ? "" : "...";
+const maxVal = arr.length ? Math.max(...arr.map(m => m[field] || 0)) : 0;
+const filtered = arr.filter(m => (m[field] || 0) === maxVal && maxVal >= 1).slice(0, 3);
+        container.innerHTML = filtered.length ?
+"" : "...";
         filtered.forEach(m => {
             const item = document.createElement('div');
             item.className = 'top-item'; item.style.setProperty('--c', m.color);
             let pt = m.mensaje ? m.mensaje.substring(0, 15) + '...' : (m.mediaType === 'video' ? '(Video)' : (m.mediaType === 'image' ? '(Imagen)' : (m.encuesta ? 'Encuesta...' : '...')));
             item.innerHTML = `${icon} <b>${m.autor}</b>: ${pt}`;
+          
             item.onclick = () => {
                 const target = document.getElementById('msg-' + m.id);
                 if (target) { toggleMenu(); target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.classList.add('highlight-active'); setTimeout(() => target.classList.remove('highlight-active'), 2000); }
             };
             container.appendChild(item);
         });
-    }
+}
 </script>
 </body>
 </html>
