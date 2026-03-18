@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NALA VOID | POXYTWITTER</title>
+    <title>NALA VOID | FAN PAGE</title>
     <link rel="icon" href="https://static-cdn.jtvnw.net/jtv_user_pictures/3f87bd40-3b9a-40e0-8501-0e6c4040dc0c-profile_image-300x300.png" type="image/png">
     
     <style>
@@ -154,17 +154,15 @@
 </head>
 <body>
 
-<audio id="notifSound" src="Sonido_yape_48KBPS.mp3" preload="auto"></audio>
-
 <div class="orb orb-1"></div><div class="orb orb-2"></div>
 <div class="menu-toggle" onclick="toggleMenu()"><span></span><span></span><span></span></div>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <div class="top-section" id="topSection">
     <h2 style="text-align: center; font-size: 0.9rem; letter-spacing: 4px; margin-bottom: 30px;">RANKING</h2>
-    <div class="top-box"><h3>Mas Valorado 👍</h3><div id="top-likes"></div></div>
+    <div class="top-box"><h3>Mejor Valorado 👍</h3><div id="top-likes"></div></div>
     <div class="top-box"><h3>Más Odiado 💀</h3><div id="top-dislikes"></div></div>
-    <div class="top-box"><h3>Tomateadas 🍅</h3><div id="top-tomates"></div></div>
+    <div class="top-box"><h3>Tomateada 🍅</h3><div id="top-tomates"></div></div>
 </div>
 
 <div class="modal-overlay" id="pollModal">
@@ -196,6 +194,7 @@
 
     <div class="input-card" id="dropZone">
         <input type="text" id="username" placeholder="Nickname...">
+   
         <textarea id="commentText" rows="3" placeholder="Escribe tu comentario o arrastra un archivo aquí..."></textarea>
         
         <div id="mediaPreview" class="media-preview-box"></div>
@@ -209,7 +208,7 @@
     </div>
 
     <div id="comments-list" style="width: 100%;">
-        <div id="loader" class="loading-text">Cargando...⏳</div>
+        <div id="loader" class="loading-text">Cargando... ⏳</div>
     </div>
 </div>
 
@@ -225,22 +224,16 @@
     };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff'];
     
-    // NUEVA LÓGICA: Guardamos el tiempo de inicio para saber si el mensaje es viejo o nuevo
+    // Lista de colores expandida
+    const colors = ['#00f2fe', '#4facfe', '#7d5fff', '#f5576c', '#43e97b', '#fe019a', '#00ffcc', '#ffffff', '#ffaa00', '#ffea00', '#ff0055', '#8a2be2', '#00ff00', '#ff4500', '#1e90ff', '#ff1493', '#adff2f', '#00ced1', '#ffb6c1', '#f0e68c', '#dda0dd', '#ff99cc', '#7cfc00', '#00bfff', '#ff6347', '#ffff00', '#ff8c00', '#ba55d3', '#32cd32', '#00fa9a'];
+    
     const initTime = Date.now();
     let currentMediaData = null;
     let currentMediaType = null;
 
-    // INICIALIZADOR MODO DIOS
     if (localStorage.getItem('nala_admin') === 'true') {
         document.body.classList.add('admin-mode');
-    }
-
-    function playNotification() {
-        const audio = document.getElementById('notifSound');
-        audio.currentTime = 0;
-        audio.play().catch(e => { console.log("Clickea la página para habilitar el sonido"); });
     }
 
     function tiempoRelativo(fecha) {
@@ -260,7 +253,6 @@
     function toggleReplyBox(id) { document.getElementById(`reply-box-${id}`).classList.toggle('active'); }
     function toggleRepliesList(id) { document.getElementById(`replies-list-${id}`).classList.toggle('active'); }
 
-    /* GESTIÓN DE ARCHIVOS */
     const dropZone = document.getElementById('dropZone');
     dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
     dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); });
@@ -292,7 +284,6 @@
         document.getElementById('fileInput').value = '';
     }
 
-    /* MODAL ENCUESTAS */
     function openPollModal() { document.getElementById('pollModal').style.display = 'flex'; }
     function closePollModal() { document.getElementById('pollModal').style.display = 'none'; }
     function addPollOption() {
@@ -327,7 +318,6 @@
         localStorage.setItem(localKey, 'true');
     }
 
-    /* ACCIONES DE COMENTARIO Y TRUCO ADMIN */
     function addComment(parentId = null) {
         const userInput = parentId ? document.getElementById(`user-${parentId}`) : document.getElementById('username');
         const textInput = parentId ? document.getElementById(`text-${parentId}`) : document.getElementById('commentText');
@@ -336,7 +326,6 @@
         const media = parentId ? null : currentMediaData;
         const mType = parentId ? null : currentMediaType;
 
-        // ACTIVADOR MODO DIOS
         if (text === "/nala_admin") {
             localStorage.setItem('nala_admin', 'true');
             document.body.classList.add('admin-mode');
@@ -354,7 +343,7 @@
         
         if (user === "ADMIN_NALA" && text === "RESETEAR") { database.ref('comentarios').remove(); return; }
         if (!text && !media) return;
-
+        
         database.ref('comentarios').push({ 
             autor: user || "Anónimo", 
             mensaje: text, 
@@ -366,11 +355,9 @@
             likes: 0, dislikes: 0, tomates: 0, 
             fecha: Date.now() 
         });
-
         if(!parentId) { textInput.value = ""; clearMedia(); } else { textInput.value = ""; }
     }
 
-    // FUNCIÓN ELIMINAR COMENTARIO (SOLO ADMIN)
     function deleteComment(id) {
         if (confirm("¿Seguro que quieres borrar esta webada?")) {
             database.ref('comentarios/' + id).remove();
@@ -389,7 +376,6 @@
         }
     }
 
-    /* RENDERIZADO PRINCIPAL */
     function drawPoll(msgId, encuesta) {
         if (!encuesta) return "";
         const total = Object.values(encuesta.opciones).reduce((a, b) => a + (b.votos || 0), 0);
@@ -398,7 +384,7 @@
             const opt = encuesta.opciones[k];
             const p = total > 0 ? Math.round((opt.votos/total)*100) : 0;
             html += `<div style="background:rgba(255,255,255,0.05); margin:5px 0; padding:8px; border-radius:5px; position:relative; cursor:pointer;"
-                onclick="votePollOption('${msgId}', '${k}')">
+            onclick="votePollOption('${msgId}', '${k}')">
                 <div style="background:var(--accent); position:absolute; left:0; top:0; height:100%; width:${p}%; opacity:0.2; transition:0.3s;"></div>
                 <div style="position:relative; display:flex; justify-content:space-between; font-size:0.9rem;"><span>${opt.texto}</span><span>${p}% (${opt.votos || 0})</span></div>
             </div>`;
@@ -407,7 +393,6 @@
         return html;
     }
 
-    // ESCUCHADOR PARA BORRAR DEL DOM CUANDO EL ADMIN ELIMINA
     database.ref('comentarios').on('child_removed', (snapshot) => {
         const post = snapshot.val();
         if(!post.parentId) {
@@ -419,6 +404,7 @@
         }
     });
 
+    // ESCUCHADOR DE NUEVOS MENSAJES
     database.ref('comentarios').on('child_added', (snapshot) => {
         const loader = document.getElementById('loader');
         if (loader) loader.style.display = 'none';
@@ -480,11 +466,6 @@
                 if(counter) counter.innerText = parseInt(counter.innerText) + 1;
             }
         }
-        
-        // CORRECCIÓN DEL SONIDO: Solo suena si el mensaje es más nuevo que cuando se cargó la página
-        if (post.fecha > initTime) {
-            playNotification();
-        }
     });
 
     database.ref('comentarios').on('child_changed', (snapshot) => {
@@ -508,30 +489,35 @@
         }
     });
 
+    // SOLUCIÓN A LA ASFIXIA: Temporizador de Debounce para no colapsar el Top Ranking
+    let debounceTimer;
     database.ref('comentarios').on('value', (snapshot) => {
-        const allData = [];
-        const replyCounts = {};
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const allData = [];
+            const replyCounts = {};
 
-        snapshot.forEach(child => { 
-            const d = child.val(); 
-            d.id = child.key; 
-            allData.push(d); 
-            if(d.parentId) {
-                replyCounts[d.parentId] = (replyCounts[d.parentId] || 0) + 1;
+            snapshot.forEach(child => { 
+                const d = child.val(); 
+                d.id = child.key; 
+                allData.push(d); 
+                if(d.parentId) {
+                    replyCounts[d.parentId] = (replyCounts[d.parentId] || 0) + 1;
+                }
+            });
+
+            for (let parentId in replyCounts) {
+                const counter = document.getElementById(`count-${parentId}`);
+                if (counter) counter.innerText = replyCounts[parentId];
             }
-        });
-
-        for (let parentId in replyCounts) {
-            const counter = document.getElementById(`count-${parentId}`);
-            if (counter) counter.innerText = replyCounts[parentId];
-        }
-
-        updateTop('top-likes', allData, 'likes', '👍');
-        updateTop('top-dislikes', allData, 'dislikes', '💀');
-        updateTop('top-tomates', allData, 'tomates', '🍅');
-        
-        const loader = document.getElementById('loader');
-        if (loader && allData.length === 0) loader.style.display = 'none';
+            
+            updateTop('top-likes', allData, 'likes', '👍');
+            updateTop('top-dislikes', allData, 'dislikes', '💀');
+            updateTop('top-tomates', allData, 'tomates', '🍅');
+            
+            const loader = document.getElementById('loader');
+            if (loader && allData.length === 0) loader.style.display = 'none';
+        }, 300); // 300ms de respiro para que Firebase no mate el navegador
     });
 
     function updateTop(elId, arr, field, icon) {
@@ -544,6 +530,7 @@
             item.className = 'top-item'; item.style.setProperty('--c', m.color);
             let pt = m.mensaje ? m.mensaje.substring(0, 15) + '...' : (m.mediaType === 'video' ? '(Video)' : (m.mediaType === 'image' ? '(Imagen)' : (m.encuesta ? 'Encuesta...' : '...')));
             item.innerHTML = `${icon} <b>${m.autor}</b>: ${pt}`;
+          
             item.onclick = () => {
                 const target = document.getElementById('msg-' + m.id);
                 if (target) { toggleMenu(); target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.classList.add('highlight-active'); setTimeout(() => target.classList.remove('highlight-active'), 2000); }
